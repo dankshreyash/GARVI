@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Mail, Phone, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [mobileHelpOpen, setMobileHelpOpen] = useState(false);
   const [msg, setMsg] = useState(null);
 
   const handleLogin = (e) => {
@@ -13,9 +14,9 @@ export default function Login() {
     const pass = e.target.elements.password.value.trim();
     if (email && pass) {
       setMsg({ type: 'success', text: 'Login successful! Redirecting...' });
-      setTimeout(() => navigate('/dashboard'), 2000);
+      setTimeout(() => navigate('/dashboard'), 1500);
     } else {
-      setMsg({ type: 'error', text: 'Invalid credentials. Please try again.' });
+      setMsg({ type: 'error', text: 'Invalid credentials. Please enter email and password.' });
     }
   };
 
@@ -23,8 +24,8 @@ export default function Login() {
     <div className="min-h-screen bg-gray-50 relative overflow-hidden font-sans">
       {/* Floating shapes */}
       <div className="absolute inset-0 -z-10">
-        <div className="floating-shape w-24 h-24 bg-garvi-orange rounded-full top-20 left-10" />
-        <div className="floating-shape w-16 h-16 bg-garvi-gold rounded-lg bottom-32 right-16" style={{ animationDelay: '1s' }} />
+        <div className="floating-shape w-24 h-24 bg-garvi-orange rounded-full top-20 left-10 opacity-10" />
+        <div className="floating-shape w-16 h-16 bg-garvi-gold rounded-lg bottom-32 right-16 opacity-10" style={{ animationDelay: '1s' }} />
       </div>
 
       {/* Top Header */}
@@ -39,7 +40,7 @@ export default function Login() {
       </div>
 
       {/* Login Container */}
-      <main className="pt-28 pb-8 flex items-center justify-center px-4">
+      <main className="pt-28 pb-20 flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 fade-in">
           <div className="text-center mb-8">
             <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI Symbol" className="mx-auto h-24 mb-4" />
@@ -58,6 +59,7 @@ export default function Login() {
                 placeholder="you@example.com"
               />
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <div className="relative">
@@ -80,10 +82,10 @@ export default function Login() {
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="text-garvi-orange focus:ring-garvi-orange border-gray-300 rounded" /> Remember me
               </label>
-              <a href="#forgot" className="text-garvi-orange hover:text-garvi-gold">Forgot password?</a>
+              <a href="#forgot" className="text-garvi-orange hover:text-garvi-gold font-medium">Forgot password?</a>
             </div>
 
             <button type="submit" className="w-full py-3 rounded-lg bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-semibold hover:shadow-lg transition-all">
@@ -97,7 +99,7 @@ export default function Login() {
 
           {msg && (
             <div
-              className={`mt-6 text-center py-2 rounded-lg text-white font-medium ${
+              className={`mt-6 text-center py-2.5 rounded-lg text-white font-medium ${
                 msg.type === 'success' ? 'bg-green-500' : 'bg-red-500'
               }`}
             >
@@ -119,10 +121,10 @@ export default function Login() {
                 <span className="font-semibold text-gray-800">Need Help?</span>
               </div>
               <div className="hidden sm:flex items-center gap-6 text-sm text-gray-600">
-                <a href="#contact" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
+                <a href="mailto:support@garvi.gujarat.gov.in" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
                   <Mail className="w-4 h-4" /> support@garvi.gujarat.gov.in
                 </a>
-                <a href="#phone" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
+                <a href="tel:+917912345678" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
                   <Phone className="w-4 h-4" /> +91-79-1234-5678
                 </a>
                 <a href="#guide" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
@@ -130,26 +132,31 @@ export default function Login() {
                 </a>
               </div>
             </div>
-            <button id="helpToggle" className="sm:hidden text-garvi-orange hover:text-garvi-gold">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+            <button
+              id="helpToggle"
+              onClick={() => setMobileHelpOpen(!mobileHelpOpen)}
+              className="sm:hidden text-garvi-orange hover:text-garvi-gold p-1"
+              aria-label="Toggle Help details"
+            >
+              {mobileHelpOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </button>
           </div>
 
-          <div id="mobileHelp" className="hidden sm:hidden mt-4 pt-4 border-t border-gray-200">
-            <div className="grid grid-cols-1 gap-3 text-sm">
-              <a href="#contact" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
-                <Mail className="w-4 h-4" /> Email: support@garvi.gujarat.gov.in
-              </a>
-              <a href="#phone" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
-                <Phone className="w-4 h-4" /> Phone: +91-79-1234-5678
-              </a>
-              <a href="#guide" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
-                User Guide &amp; Documentation
-              </a>
+          {mobileHelpOpen && (
+            <div id="mobileHelp" className="sm:hidden mt-4 pt-4 border-t border-gray-200">
+              <div className="grid grid-cols-1 gap-3 text-sm">
+                <a href="mailto:support@garvi.gujarat.gov.in" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
+                  <Mail className="w-4 h-4" /> Email: support@garvi.gujarat.gov.in
+                </a>
+                <a href="tel:+917912345678" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
+                  <Phone className="w-4 h-4" /> Phone: +91-79-1234-5678
+                </a>
+                <a href="#guide" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
+                  User Guide &amp; Documentation
+                </a>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
