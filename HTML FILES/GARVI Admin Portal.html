@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GARVI — Admin Portal</title>
+  <meta name="description" content="GARVI Admin Portal to create institute user IDs and passwords, and manage the list." />
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'garvi-orange': '#D58B00',
+            'garvi-gold': '#F4A623'
+          },
+          boxShadow: {
+            'card': '0 12px 30px rgba(0,0,0,0.08)'
+          },
+          borderRadius: {
+            '2xl': '1rem'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+    :focus-visible { outline: 2px solid #D58B00; outline-offset: 2px; }
+    .hover-lift { transition: transform .25s ease, box-shadow .25s ease }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(0,0,0,.12) }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="#" class="text-garvi-orange font-extrabold text-2xl tracking-wide">GARVI</a>
+        <span class="text-gray-500">Admin Portal</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-gray-700">
+        <a href="#" class="hover:text-garvi-orange">Analytics</a>
+        <a href="#" class="hover:text-garvi-orange">Benchmarking</a>
+        <a href="#" class="hover:text-garvi-orange">Simulator</a>
+        <a aria-current="page" class="text-garvi-orange font-semibold">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-garvi-orange">Admin — Create Institute Logins</h1>
+      <p class="mt-2 text-gray-600">Add an institute with a user ID and password. Entries are shown below.</p>
+    </section>
+
+    <!-- Form + Actions -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="md:col-span-2 bg-white rounded-2xl p-6 shadow-card hover-lift">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Create Account</h2>
+          <form id="createForm" class="grid sm:grid-cols-3 gap-4" autocomplete="off">
+            <div>
+              <label for="inst" class="block text-sm text-gray-700 mb-1">Institute Name</label>
+              <input id="inst" type="text" required class="w-full rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="e.g., IIT Gandhinagar" />
+            </div>
+            <div>
+              <label for="uid" class="block text-sm text-gray-700 mb-1">User ID</label>
+              <input id="uid" type="text" required class="w-full rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="e.g., iitgn_admin" />
+            </div>
+            <div>
+              <label for="pwd" class="block text-sm text-gray-700 mb-1">Password</label>
+              <input id="pwd" type="text" required class="w-full rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="e.g., P@ssw0rd!" />
+            </div>
+            <div class="sm:col-span-3 flex items-center gap-3 mt-2">
+              <button type="submit" class="bg-garvi-orange text-white px-5 py-2 rounded-xl font-semibold hover:opacity-90">Create</button>
+              <button type="button" id="clearForm" class="border border-garvi-orange text-garvi-orange px-5 py-2 rounded-xl font-semibold hover:bg-garvi-orange hover:text-white transition">Clear</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-card">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Tools</h2>
+          <div class="flex flex-col gap-3">
+            <button id="exportCSV" class="w-full border border-garvi-orange text-garvi-orange px-4 py-2 rounded-lg hover:bg-garvi-orange hover:text-white transition">Export CSV</button>
+            <button id="clearAll" class="w-full border border-red-500 text-red-600 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition">Clear All</button>
+          </div>
+          <p class="text-xs text-gray-500 mt-3">All data is stored locally in your browser (demo only).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Submissions Review -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">GSIRF 2026 — Submitted Data</h2>
+        <span class="text-sm text-gray-500" id="subCount">0 submissions</span>
+      </div>
+      <div class="overflow-x-auto bg-white rounded-2xl shadow-card">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="px-4 py-3 text-left">#</th>
+              <th class="px-4 py-3 text-left">Institute</th>
+              <th class="px-4 py-3 text-left">GSIRF ID</th>
+              <th class="px-4 py-3 text-left">Submitted At</th>
+              <th class="px-4 py-3 text-left">Status</th>
+              <th class="px-4 py-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="subRows" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Search + Table -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h2 class="text-xl font-semibold text-gray-900">Institutes</h2>
+        <div class="flex items-center gap-3">
+          <input id="search" type="search" class="rounded-lg border-gray-300 focus:border-garvi-orange focus:ring-garvi-orange px-3 py-2" placeholder="Search institute or user id…" />
+          <span class="text-sm text-gray-500" id="count">0 records</span>
+        </div>
+      </div>
+
+      <div class="mt-4 overflow-x-auto bg-white rounded-2xl shadow-card">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="px-4 py-3 text-left">#</th>
+              <th class="px-4 py-3 text-left">Institute</th>
+              <th class="px-4 py-3 text-left">User ID</th>
+              <th class="px-4 py-3 text-left">Password</th>
+              <th class="px-4 py-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rows" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+      <p class="text-gray-500">© GARVI — GSIRF Performance Tools</p>
+      <p class="text-gray-500">Contact: <a class="text-garvi-orange hover:underline" href="mailto:garvi@gmail.com">garvi@gmail.com</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const KEY = 'garvi_admin_users_v1';
+
+    const state = {
+      users: JSON.parse(localStorage.getItem(KEY) || '[]'),
+      filter: ''
+    };
+
+    const el = {
+      form: document.getElementById('createForm'),
+      inst: document.getElementById('inst'),
+      uid: document.getElementById('uid'),
+      pwd: document.getElementById('pwd'),
+      clearForm: document.getElementById('clearForm'),
+      rows: document.getElementById('rows'),
+      search: document.getElementById('search'),
+      count: document.getElementById('count'),
+      exportCSV: document.getElementById('exportCSV'),
+      clearAll: document.getElementById('clearAll')
+    };
+
+    function save() {
+      localStorage.setItem(KEY, JSON.stringify(state.users));
+    }
+
+    function toCSV(rows) {
+      const header = ['Institute','User ID','Password'];
+      const lines = [header.join(',')].concat(rows.map(r =>
+        [r.inst, r.uid, r.pwd].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')));
+      return lines.join('\\n');
+    }
+
+    function render() {
+      const q = state.filter.trim().toLowerCase();
+      const list = state.users.filter(u =>
+        !q || u.inst.toLowerCase().includes(q) || u.uid.toLowerCase().includes(q)
+      );
+      el.count.textContent = list.length + (list.length === 1 ? ' record' : ' records');
+
+      el.rows.innerHTML = list.map((u, i) => {
+        const index = state.users.indexOf(u) + 1;
+        const id = 'pw' + index;
+        return `
+          <tr>
+            <td class="px-4 py-3">${index}</td>
+            <td class="px-4 py-3">${u.inst}</td>
+            <td class="px-4 py-3">${u.uid}</td>
+            <td class="px-4 py-3">
+              <span id="${id}" data-visible="false">••••••••</span>
+              <button class="ml-2 text-garvi-orange hover:underline text-xs" data-action="toggle" data-target="${id}">Show</button>
+            </td>
+            <td class="px-4 py-3">
+              <button class="text-red-600 hover:underline text-xs" data-action="delete" data-uid="${u.uid}">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    el.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const inst = el.inst.value.trim();
+      const uid = el.uid.value.trim();
+      const pwd = el.pwd.value.trim();
+
+      if (!inst || !uid || !pwd) return;
+
+      // Prevent duplicate user IDs
+      if (state.users.some(u => u.uid.toLowerCase() === uid.toLowerCase())) {
+        alert('User ID already exists. Choose a different one.');
+        return;
+      }
+
+      state.users.push({ inst, uid, pwd });
+      save();
+      render();
+      el.form.reset();
+      el.inst.focus();
+    });
+
+    el.clearForm.addEventListener('click', () => {
+      el.form.reset();
+      el.inst.focus();
+    });
+
+    el.search.addEventListener('input', () => {
+      state.filter = el.search.value;
+      render();
+    });
+
+    el.rows.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+
+      if (action === 'toggle') {
+        const target = document.getElementById(btn.getAttribute('data-target'));
+        const visible = target.getAttribute('data-visible') === 'true';
+        target.textContent = visible ? '••••••••' : (state.users[parseInt(target.id.replace('pw','')) - 1]?.pwd || '');
+        target.setAttribute('data-visible', (!visible).toString());
+        btn.textContent = visible ? 'Show' : 'Hide';
+      }
+
+      if (action === 'delete') {
+        const uid = btn.getAttribute('data-uid');
+        const idx = state.users.findIndex(u => u.uid === uid);
+        if (idx > -1 && confirm('Delete this user?')) {
+          state.users.splice(idx, 1);
+          save();
+          render();
+        }
+      }
+    });
+
+    el.exportCSV.addEventListener('click', () => {
+      const csv = toCSV(state.users);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'garvi_institutes.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    el.clearAll.addEventListener('click', () => {
+      if (confirm('Clear ALL records?')) {
+        state.users = [];
+        save();
+        render();
+      }
+    });
+
+    // Initial render
+    render();
+
+    // ── SUBMISSIONS ──────────────────────────────────────────────────────────
+    const SUBS_KEY = 'garvi_submissions_v1';
+    const DB_KEY   = 'garvi_db_v1';
+
+    function getSubs() { return JSON.parse(localStorage.getItem(SUBS_KEY) || '[]'); }
+    function saveSubs(s) { localStorage.setItem(SUBS_KEY, JSON.stringify(s)); }
+    function getDB()   { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+    function saveDB(d) { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
+
+    function statusBadge(status) {
+      if (status === 'pending')  return '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">⏳ Pending</span>';
+      if (status === 'accepted') return '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">✅ Accepted</span>';
+      if (status === 'rejected') return '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">❌ Rejected</span>';
+      return status;
+    }
+
+    function renderSubs() {
+      const list = getSubs();
+      document.getElementById('subCount').textContent = list.length + (list.length === 1 ? ' submission' : ' submissions');
+      document.getElementById('subRows').innerHTML = list.length === 0
+        ? '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-400 text-sm">No submissions yet.</td></tr>'
+        : list.map((s, i) => `
+          <tr>
+            <td class="px-4 py-3">${i + 1}</td>
+            <td class="px-4 py-3 font-medium">${s.instituteName}</td>
+            <td class="px-4 py-3 text-gray-500">${s.gsirfId}</td>
+            <td class="px-4 py-3 text-gray-500">${new Date(s.submittedAt).toLocaleString()}</td>
+            <td class="px-4 py-3">${statusBadge(s.status)}</td>
+            <td class="px-4 py-3 flex gap-2">
+              ${s.status === 'pending' ? `
+                <button class="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg transition" data-sub-action="accept" data-sub-id="${s.id}">Accept</button>
+                <button class="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition" data-sub-action="reject" data-sub-id="${s.id}">Reject</button>
+              ` : `<span class="text-xs text-gray-400">—</span>`}
+              <button class="text-xs border border-gray-300 text-gray-600 hover:bg-gray-100 px-3 py-1 rounded-lg transition" data-sub-action="view" data-sub-id="${s.id}">View</button>
+            </td>
+          </tr>`).join('');
+    }
+
+    document.getElementById('subRows').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-sub-action]');
+      if (!btn) return;
+      const action = btn.dataset.subAction;
+      const id = btn.dataset.subId;
+      const subs = getSubs();
+      const idx = subs.findIndex(s => s.id === id);
+      if (idx === -1) return;
+
+      if (action === 'accept') {
+        subs[idx].status = 'accepted';
+        subs[idx].acceptedAt = new Date().toISOString();
+        saveSubs(subs);
+        const db = getDB();
+        const dbIdx = db.findIndex(d => d.gsirfId === subs[idx].gsirfId);
+        if (dbIdx > -1) db[dbIdx] = subs[idx]; else db.push(subs[idx]);
+        saveDB(db);
+        renderSubs();
+        alert('✅ Submission accepted and saved to database.');
+      } else if (action === 'reject') {
+        if (!confirm('Reject this submission?')) return;
+        subs[idx].status = 'rejected';
+        saveSubs(subs);
+        renderSubs();
+      } else if (action === 'view') {
+        const s = subs[idx];
+        const info = Object.entries(s.data || {}).slice(0, 20).map(([k,v]) => `${k}: ${v}`).join('\n');
+        alert(`Institute: ${s.instituteName}\nGSIRF ID: ${s.gsirfId}\nSubmitted: ${new Date(s.submittedAt).toLocaleString()}\nStatus: ${s.status}\n\n── Data Preview ──\n${info}`);
+      }
+    });
+
+    renderSubs();
+  </script>
+</body>
+</html>
