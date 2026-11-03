@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Users, LogOut, Mail, BarChart3, PieChart, Activity } from 'lucide-react';
 
 export default function Admin() {
