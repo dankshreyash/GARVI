@@ -1,141 +1,204 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Phone, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Mail, Phone, ChevronDown, ChevronUp, ArrowLeft, Shield, Lock, CheckCircle2 } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [mobileHelpOpen, setMobileHelpOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [msg, setMsg] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const email = e.target.elements.email.value.trim();
-    const pass = e.target.elements.password.value.trim();
-    if (email && pass) {
-      setMsg({ type: 'success', text: 'Login successful! Redirecting...' });
-      setTimeout(() => navigate('/dashboard'), 1500);
+    if (email.trim() && password.trim()) {
+      setMsg({ type: 'success', text: 'Login successful! Redirecting to Institutional Dashboard...' });
+      setTimeout(() => navigate('/dashboard'), 1200);
     } else {
-      setMsg({ type: 'error', text: 'Invalid credentials. Please enter email and password.' });
+      setMsg({ type: 'error', text: 'Please enter both User ID / Email and Password.' });
     }
   };
 
+  const handleFillDemo = () => {
+    setEmail('iqac@gujaratuniversity.ac.in');
+    setPassword('GSIRF2026!');
+    setMsg(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden font-sans">
-      {/* Floating shapes */}
-      <div className="absolute inset-0 -z-10">
-        <div className="floating-shape w-24 h-24 bg-garvi-orange rounded-full top-20 left-10 opacity-10" />
-        <div className="floating-shape w-16 h-16 bg-garvi-gold rounded-lg bottom-32 right-16 opacity-10" style={{ animationDelay: '1s' }} />
+    <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans flex flex-col justify-between">
+      {/* Background Ambience */}
+      <div className="absolute inset-0 -z-10 pointer-events-none">
+        <div className="absolute top-10 left-1/4 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl" />
       </div>
 
       {/* Top Header */}
-      <div className="bg-white shadow-md fixed top-0 inset-x-0 z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-6">
-          <div className="flex items-center gap-3">
-            <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI logo" className="h-12 w-12 object-contain" />
-            <h1 className="text-2xl font-bold text-garvi-orange">GARVI</h1>
-            <span className="text-base text-gray-600 ml-2">Login</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Login Container */}
-      <main className="pt-28 pb-20 flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 fade-in">
-          <div className="text-center mb-8">
-            <img src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png" alt="GARVI Symbol" className="mx-auto h-24 mb-4" />
-            <h2 className="text-3xl font-bold text-gray-900">Login</h2>
-            <p className="text-gray-500 text-sm">Access your GARVI Analytics Dashboard</p>
-          </div>
-
-          <form id="loginForm" onSubmit={handleLogin} className="space-y-5">
+      <header className="glass fixed top-0 inset-x-0 z-50 border-b border-slate-200/70">
+        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-orange-50 border border-amber-200/60 flex items-center justify-center p-1 shadow-2xs">
+              <img
+                src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png"
+                alt="GARVI logo"
+                className="h-full w-full object-contain"
+              />
+            </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+              <span className="text-xl font-black text-gradient-garvi tracking-tight">GARVI</span>
+              <span className="text-xs text-slate-500 font-medium ml-2">GSIRF Institutional Portal</span>
+            </div>
+          </Link>
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-garvi-orange transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Home
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Login Card */}
+      <main className="pt-28 pb-24 flex items-center justify-center px-4">
+        <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-xl p-8 fade-in">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center p-2">
+              <img
+                src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png"
+                alt="GARVI Symbol"
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Institutional Login</h2>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">
+              Sign in to manage GSIRF 2026 data collection and institutional ratings
+            </p>
+          </div>
+
+          {/* Demo Credentials Quick Fill Banner */}
+          <div className="mb-6 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/70 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-garvi-orange flex-shrink-0" />
+              <span className="text-xs text-slate-700">Need demo login access?</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleFillDemo}
+              className="text-xs font-bold text-garvi-orange hover:text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-200 shadow-2xs hover:bg-amber-50 transition-colors"
+            >
+              Fill Demo
+            </button>
+          </div>
+
+          <form id="loginForm" onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Institute User ID or Email
+              </label>
               <input
-                type="email"
+                type="text"
                 id="email"
                 required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-garvi-orange/40 focus:border-garvi-orange outline-none"
-                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-garvi-orange/30 focus:border-garvi-orange outline-none transition"
+                placeholder="e.g. iqac@gujaratuniversity.ac.in"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-garvi-orange/40 focus:border-garvi-orange outline-none pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-garvi-orange/30 focus:border-garvi-orange outline-none transition pr-10"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   id="togglePwd"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-garvi-orange"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-garvi-orange"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="text-garvi-orange focus:ring-garvi-orange border-gray-300 rounded" /> Remember me
+            <div className="flex items-center justify-between text-xs pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-slate-600">
+                <input type="checkbox" className="text-garvi-orange focus:ring-garvi-orange rounded border-slate-300" defaultChecked />
+                <span>Remember institute</span>
               </label>
-              <a href="#forgot" className="text-garvi-orange hover:text-garvi-gold font-medium">Forgot password?</a>
+              <a href="#forgot" className="text-garvi-orange hover:text-amber-700 font-semibold">
+                Forgot password?
+              </a>
             </div>
 
-            <button type="submit" className="w-full py-3 rounded-lg bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-semibold hover:shadow-lg transition-all">
-              Sign In
+            <button
+              type="submit"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-bold text-sm shadow-sm hover:shadow-md hover:scale-[1.01] transition-all"
+            >
+              Sign In to Dashboard
             </button>
 
-            <div className="text-center text-sm text-gray-500 mt-3">
-              Don&#39;t have an account? <a href="#signup" className="text-garvi-orange hover:text-garvi-gold font-semibold">Sign up</a>
+            <div className="text-center text-xs text-slate-500 pt-1">
+              Don&#39;t have institutional credentials?{' '}
+              <Link to="/admin" className="text-garvi-orange hover:text-amber-700 font-semibold">
+                Contact State Admin
+              </Link>
             </div>
           </form>
 
           {msg && (
             <div
-              className={`mt-6 text-center py-2.5 rounded-lg text-white font-medium ${
-                msg.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+              className={`mt-5 text-center py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 ${
+                msg.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                  : 'bg-red-50 text-red-800 border border-red-200'
               }`}
             >
-              {msg.text}
+              {msg.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+              <span>{msg.text}</span>
             </div>
           )}
         </div>
       </main>
 
-      {/* Help Window */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      {/* Bottom Help Window */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200/80 shadow-md z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-garvi-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="font-semibold text-gray-800">Need Help?</span>
+            <div className="flex items-center gap-3">
+              <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-800">
+                <Lock className="w-3.5 h-3.5" />
               </div>
-              <div className="hidden sm:flex items-center gap-6 text-sm text-gray-600">
-                <a href="mailto:support@garvi.gujarat.gov.in" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
-                  <Mail className="w-4 h-4" /> support@garvi.gujarat.gov.in
-                </a>
-                <a href="tel:+917912345678" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
-                  <Phone className="w-4 h-4" /> +91-79-1234-5678
-                </a>
-                <a href="#guide" className="hover:text-garvi-orange transition-colors flex items-center gap-1">
-                  User Guide
-                </a>
+              <div>
+                <span className="text-xs font-bold text-slate-900 block leading-tight">GSIRF Institutional Support</span>
+                <span className="text-[10px] text-slate-500 hidden sm:inline">Govt. of Gujarat Academic Portal</span>
               </div>
             </div>
+
+            <div className="hidden sm:flex items-center gap-6 text-xs text-slate-600">
+              <a href="mailto:garvisupport@gmail.com" className="hover:text-garvi-orange transition-colors flex items-center gap-1.5 font-medium">
+                <Mail className="w-3.5 h-3.5 text-garvi-orange" /> garvisupport@gmail.com
+              </a>
+              <a href="tel:+918147556654" className="hover:text-garvi-orange transition-colors flex items-center gap-1.5 font-medium">
+                <Phone className="w-3.5 h-3.5 text-garvi-orange" /> +91 81475 56654
+              </a>
+            </div>
+
             <button
               id="helpToggle"
               onClick={() => setMobileHelpOpen(!mobileHelpOpen)}
-              className="sm:hidden text-garvi-orange hover:text-garvi-gold p-1"
+              className="sm:hidden text-garvi-orange hover:text-amber-700 p-1"
               aria-label="Toggle Help details"
             >
               {mobileHelpOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -143,22 +206,17 @@ export default function Login() {
           </div>
 
           {mobileHelpOpen && (
-            <div id="mobileHelp" className="sm:hidden mt-4 pt-4 border-t border-gray-200">
-              <div className="grid grid-cols-1 gap-3 text-sm">
-                <a href="mailto:support@garvi.gujarat.gov.in" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
-                  <Mail className="w-4 h-4" /> Email: support@garvi.gujarat.gov.in
-                </a>
-                <a href="tel:+917912345678" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
-                  <Phone className="w-4 h-4" /> Phone: +91-79-1234-5678
-                </a>
-                <a href="#guide" className="flex items-center gap-2 text-gray-600 hover:text-garvi-orange transition-colors">
-                  User Guide &amp; Documentation
-                </a>
-              </div>
+            <div id="mobileHelp" className="sm:hidden mt-3 pt-3 border-t border-slate-200/60 grid grid-cols-1 gap-2 text-xs">
+              <a href="mailto:garvisupport@gmail.com" className="flex items-center gap-2 text-slate-600 hover:text-garvi-orange">
+                <Mail className="w-3.5 h-3.5 text-garvi-orange" /> garvisupport@gmail.com
+              </a>
+              <a href="tel:+918147556654" className="flex items-center gap-2 text-slate-600 hover:text-garvi-orange">
+                <Phone className="w-3.5 h-3.5 text-garvi-orange" /> +91 81475 56654
+              </a>
             </div>
           )}
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
