@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Phone, ChevronDown, ChevronUp, ArrowLeft, Shield, Lock, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Phone, ChevronDown, ChevronUp, ArrowLeft, Shield, Globe, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { lang, toggleLanguage, t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [mobileHelpOpen, setMobileHelpOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -13,10 +15,20 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (email.trim() && password.trim()) {
-      setMsg({ type: 'success', text: 'Login successful! Redirecting to Institutional Dashboard...' });
+      setMsg({
+        type: 'success',
+        text: lang === 'gu'
+          ? 'પ્રવેશ સફળ! સંસ્થાકીય ડેશબોર્ડ પર રીડાયરેક્ટ કરી રહ્યું છે...'
+          : 'Login successful! Redirecting to Institutional Dashboard...'
+      });
       setTimeout(() => navigate('/dashboard'), 1200);
     } else {
-      setMsg({ type: 'error', text: 'Please enter both User ID / Email and Password.' });
+      setMsg({
+        type: 'error',
+        text: lang === 'gu'
+          ? 'કૃપા કરીને યુઝર આઈડી / ઈમેલ અને પાસવર્ડ બંને દાખલ કરો.'
+          : 'Please enter both User ID / Email and Password.'
+      });
     }
   };
 
@@ -38,24 +50,42 @@ export default function Login() {
       <header className="glass fixed top-0 inset-x-0 z-50 border-b border-slate-200/70">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-orange-50 border border-amber-200/60 flex items-center justify-center p-1 shadow-2xs">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 flex items-center justify-center p-0.5 shadow-2xs">
               <img
-                src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png"
-                alt="GARVI logo"
+                src="/kcg_gujarat_transparent.png"
+                alt="GARVI Gujarat Logo"
                 className="h-full w-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                }}
               />
             </div>
             <div>
               <span className="text-xl font-black text-gradient-garvi tracking-tight">GARVI</span>
-              <span className="text-xs text-slate-500 font-medium ml-2">GSIRF Institutional Portal</span>
+              <span className="text-xs text-slate-500 font-medium ml-2">
+                {t('login.title', 'GSIRF Institutional Portal')}
+              </span>
             </div>
           </Link>
-          <Link
-            to="/"
-            className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-garvi-orange transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
+
+          <div className="flex items-center gap-3">
+            {/* Language Switcher */}
+            <button
+              onClick={toggleLanguage}
+              type="button"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-xs tracking-wide transition-all shadow-2xs cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5 text-garvi-orange" />
+              <span>{lang === 'en' ? 'ગુજરાતી' : 'English'}</span>
+            </button>
+
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-garvi-orange transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" /> {lang === 'gu' ? 'મુખ્ય પૃષ્ઠ પર પાછા' : 'Back to Home'}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -63,16 +93,21 @@ export default function Login() {
       <main className="pt-28 pb-24 flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-xl p-8 fade-in">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center p-2">
+            <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center p-1 overflow-hidden">
               <img
-                src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png"
+                src="/kcg_gujarat_transparent.png"
                 alt="GARVI Symbol"
                 className="h-full w-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                }}
               />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Institutional Login</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              {t('login.title', 'Institutional Login')}
+            </h2>
             <p className="text-slate-500 text-xs sm:text-sm mt-1">
-              Sign in to manage GSIRF 2026 data collection and institutional ratings
+              {t('login.subtitle', 'Sign in with your AISHE / GSIRF registered institutional credentials')}
             </p>
           </div>
 
@@ -80,21 +115,23 @@ export default function Login() {
           <div className="mb-6 p-3 rounded-2xl bg-amber-50/80 border border-amber-200/70 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-garvi-orange flex-shrink-0" />
-              <span className="text-xs text-slate-700">Need demo login access?</span>
+              <span className="text-xs text-slate-700">
+                {lang === 'gu' ? 'ડેમો પ્રવેશ જોઈએ છે?' : 'Need demo login access?'}
+              </span>
             </div>
             <button
               type="button"
               onClick={handleFillDemo}
-              className="text-xs font-bold text-garvi-orange hover:text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-200 shadow-2xs hover:bg-amber-50 transition-colors"
+              className="text-xs font-bold text-garvi-orange hover:text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-200 shadow-2xs hover:bg-amber-50 transition-colors cursor-pointer"
             >
-              Fill Demo
+              {t('login.fillDemo', 'Fill Demo (SVNIT Surat)')}
             </button>
           </div>
 
           <form id="loginForm" onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Institute User ID or Email
+                {t('login.aisheLabel', 'AISHE Code or Institutional Email')}
               </label>
               <input
                 type="text"
@@ -109,7 +146,7 @@ export default function Login() {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Password
+                {t('login.passwordLabel', 'Password')}
               </label>
               <div className="relative">
                 <input
@@ -125,7 +162,7 @@ export default function Login() {
                   type="button"
                   id="togglePwd"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-garvi-orange"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-garvi-orange cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -135,88 +172,88 @@ export default function Login() {
             <div className="flex items-center justify-between text-xs pt-1">
               <label className="flex items-center gap-2 cursor-pointer text-slate-600">
                 <input type="checkbox" className="text-garvi-orange focus:ring-garvi-orange rounded border-slate-300" defaultChecked />
-                <span>Remember institute</span>
+                <span>{t('login.rememberMe', 'Remember this device')}</span>
               </label>
               <a href="#forgot" className="text-garvi-orange hover:text-amber-700 font-semibold">
-                Forgot password?
+                {t('login.forgotPassword', 'Forgot password?')}
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-bold text-sm shadow-sm hover:shadow-md hover:scale-[1.01] transition-all"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-bold text-sm shadow-sm hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer"
             >
-              Sign In to Dashboard
+              {t('login.signInBtn', 'Sign In to Dashboard')}
             </button>
 
             <div className="text-center text-xs text-slate-500 pt-1">
-              Don&#39;t have institutional credentials?{' '}
+              {lang === 'gu' ? 'ઓળખપત્ર નથી?' : "Don't have institutional credentials?"}{' '}
               <Link to="/admin" className="text-garvi-orange hover:text-amber-700 font-semibold">
-                Contact State Admin
+                {t('home.adminAccess', 'Contact State Admin')}
               </Link>
             </div>
           </form>
 
           {msg && (
             <div
-              className={`mt-5 text-center py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 ${
+              className={`mt-4 p-3 rounded-xl text-xs flex items-center gap-2 ${
                 msg.type === 'success'
                   ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                   : 'bg-red-50 text-red-800 border border-red-200'
               }`}
             >
-              {msg.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+              {msg.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
               <span>{msg.text}</span>
             </div>
           )}
         </div>
       </main>
 
-      {/* Bottom Help Window */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200/80 shadow-md z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-800">
-                <Lock className="w-3.5 h-3.5" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-900 block leading-tight">GSIRF Institutional Support</span>
-                <span className="text-[10px] text-slate-500 hidden sm:inline">Govt. of Gujarat Academic Portal</span>
-              </div>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-6 text-xs text-slate-600">
-              <a href="mailto:garvisupport@gmail.com" className="hover:text-garvi-orange transition-colors flex items-center gap-1.5 font-medium">
-                <Mail className="w-3.5 h-3.5 text-garvi-orange" /> garvisupport@gmail.com
-              </a>
-              <a href="tel:+918147556654" className="hover:text-garvi-orange transition-colors flex items-center gap-1.5 font-medium">
-                <Phone className="w-3.5 h-3.5 text-garvi-orange" /> +91 81475 56654
-              </a>
-            </div>
-
-            <button
-              id="helpToggle"
-              onClick={() => setMobileHelpOpen(!mobileHelpOpen)}
-              className="sm:hidden text-garvi-orange hover:text-amber-700 p-1"
-              aria-label="Toggle Help details"
-            >
-              {mobileHelpOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-            </button>
+      {/* Desktop Help Strip */}
+      <div className="hidden lg:block fixed bottom-0 inset-x-0 glass border-t border-slate-200 py-2.5 z-40">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs text-slate-600">
+          <div className="flex items-center gap-6">
+            <span className="font-semibold text-slate-800">
+              {lang === 'gu' ? 'GSIRF ૨૦૨૬ સંસ્થાકીય સહાયતા:' : 'GSIRF 2026 Institutional Helpdesk:'}
+            </span>
+            <a href="mailto:helpdesk@kcg.gujarat.gov.in" className="flex items-center gap-1.5 hover:text-garvi-orange">
+              <Mail className="w-3.5 h-3.5 text-garvi-orange" />
+              <span>helpdesk@kcg.gujarat.gov.in</span>
+            </a>
+            <a href="tel:+918147556654" className="flex items-center gap-1.5 hover:text-garvi-orange">
+              <Phone className="w-3.5 h-3.5 text-garvi-orange" />
+              <span>+91 81475 56654</span>
+            </a>
           </div>
-
-          {mobileHelpOpen && (
-            <div id="mobileHelp" className="sm:hidden mt-3 pt-3 border-t border-slate-200/60 grid grid-cols-1 gap-2 text-xs">
-              <a href="mailto:garvisupport@gmail.com" className="flex items-center gap-2 text-slate-600 hover:text-garvi-orange">
-                <Mail className="w-3.5 h-3.5 text-garvi-orange" /> garvisupport@gmail.com
-              </a>
-              <a href="tel:+918147556654" className="flex items-center gap-2 text-slate-600 hover:text-garvi-orange">
-                <Phone className="w-3.5 h-3.5 text-garvi-orange" /> +91 81475 56654
-              </a>
-            </div>
-          )}
+          <span className="text-[11px] text-slate-500">
+            {t('common.portalVersion', 'GARVI System v2.6.4 (GSIRF 2026 Active Cycle)')}
+          </span>
         </div>
-      </footer>
+      </div>
+
+      {/* Mobile Accordion Help */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 glass border-t border-slate-200 z-40">
+        <button
+          onClick={() => setMobileHelpOpen(!mobileHelpOpen)}
+          className="w-full flex items-center justify-between p-3 text-xs font-semibold text-slate-700 cursor-pointer"
+        >
+          <span className="flex items-center gap-1.5">
+            <Mail className="w-4 h-4 text-garvi-orange" />
+            {lang === 'gu' ? 'સહાયતા સંપર્ક વિગતો' : 'Need Institutional Help?'}
+          </span>
+          {mobileHelpOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+        </button>
+        {mobileHelpOpen && (
+          <div className="px-4 pb-3 space-y-2 text-xs border-t border-slate-100 bg-white/80">
+            <p className="text-slate-600">
+              <a href="mailto:helpdesk@kcg.gujarat.gov.in" className="text-garvi-orange font-medium">helpdesk@kcg.gujarat.gov.in</a>
+            </p>
+            <p className="text-slate-600">
+              {lang === 'gu' ? 'હેલ્પલાઇન:' : 'Helpline:'} <a href="tel:+918147556654" className="text-garvi-orange font-medium">+91 81475 56654</a>
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 84" width="360" height="84" fill="none">
+  <defs>
+    <linearGradient id="goldBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB"/>
+      <stop offset="100%" stop-color="#FEF3C7"/>
+    </linearGradient>
+    <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Container -->
+  <rect x="2" y="2" width="356" height="80" rx="16" fill="url(#goldBg)" stroke="url(#goldBorder)" stroke-width="1.75"/>
+
+  <!-- Left Accent Circle -->
+  <circle cx="42" cy="42" r="26" fill="#D97706" fill-opacity="0.12" stroke="#F59E0B" stroke-width="1"/>
+  <path d="M42 24 L45.7 35.4 L57.7 35.4 L48 42.4 L51.7 53.8 L42 46.8 L32.3 53.8 L36 42.4 L26.3 35.4 L38.3 35.4 Z" fill="#D97706"/>
+
+  <!-- Text Hierarchy -->
+  <text x="80" y="25" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="800" fill="#92400E" letter-spacing="1.2">GOVERNMENT OF GUJARAT • GSIRF</text>
+  <text x="80" y="46" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="900" fill="#78350F">5-STAR RATED INSTITUTION</text>
+
+  <!-- Stars Row + Verified Pill -->
+  <g transform="translate(80, 52)">
+    <text x="0" y="16" font-family="system-ui, sans-serif" font-size="14" fill="#D97706" letter-spacing="1">★★★★★</text>
+    <rect x="75" y="4" width="105" height="16" rx="8" fill="#059669" fill-opacity="0.12" stroke="#059669" stroke-width="0.8"/>
+    <circle cx="84" cy="12" r="3" fill="#059669"/>
+    <text x="91" y="15" font-family="system-ui, sans-serif" font-size="8.5" font-weight="700" fill="#065F46">VERIFIED ON GARVI</text>
+  </g>
+
+  <!-- Right Shield Icon -->
+  <g transform="translate(316, 26)">
+    <path d="M14 2 L2 7 C2 19 8 28 14 31 C20 28 26 19 26 7 Z" fill="#D97706" fill-opacity="0.15" stroke="#B45309" stroke-width="1.5"/>
+    <path d="M8 16 L12 20 L20 11" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
+

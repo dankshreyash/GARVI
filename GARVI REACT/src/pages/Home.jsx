@@ -1,24 +1,25 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useLanguage } from '../context/LanguageContext';
 import {
   BarChart3,
   PieChart,
   Activity,
   Mail,
   Phone,
-  ShieldCheck,
   Users,
   ArrowRight,
   BookOpen,
   Award,
   TrendingUp,
-  Building2,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 
 export default function Home() {
   const [currentYear] = useState(() => new Date().getFullYear());
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans relative overflow-x-hidden">
@@ -36,22 +37,25 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-amber-200/80 shadow-xs mb-8 fade-in">
             <span className="flex h-2 w-2 rounded-full bg-garvi-orange animate-pulse" />
             <span className="text-xs sm:text-sm font-semibold text-slate-800 tracking-wide">
-              Education Department • Government of Gujarat
+              {t('home.badge', 'Government of Gujarat Initiative')} • {t('home.subBadge', 'Education Department')}
             </span>
             <span className="text-xs text-amber-600 font-bold px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">
               GSIRF
             </span>
           </div>
 
-          {/* Emblem & Branding */}
+          {/* Transparent Gujarat Map & KCG Emblem */}
           <div className="mb-6 fade-in stagger-1">
             <div className="inline-block relative">
               <img
-                src="https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png"
-                alt="GARVI Emblem"
+                src="/kcg_gujarat_transparent.png"
+                alt="GARVI Gujarat Emblem"
                 className="mx-auto h-24 md:h-32 object-contain drop-shadow-md hover:scale-105 transition-transform duration-300"
                 width={480}
                 height={273}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                }}
               />
             </div>
           </div>
@@ -61,11 +65,14 @@ export default function Home() {
           </h1>
 
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 max-w-3xl mx-auto mb-6 leading-snug fade-in stagger-3">
-            Gujarat Academic Ratings Visualization for Improvement
+            {t('home.heroTitlePrefix', 'Empowering Gujarat Higher Education with')}{' '}
+            <span className="text-garvi-orange underline decoration-amber-300 decoration-wavy decoration-2">
+              {t('home.heroTitleHighlight', 'Data-Driven Excellence')}
+            </span>
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed fade-in stagger-4">
-            A comprehensive data-driven institutional analytics engine under the <span className="font-semibold text-slate-800">Gujarat State Institutional Rating Framework (GSIRF)</span>, empowering universities and colleges with transparent ratings, benchmarking, and predictive growth simulations.
+            {t('home.heroSubtitle', 'GARVI (Gujarat Academic Ratings Visualization for Improvement) is the official state analytics & institutional benchmarking engine powering GSIRF 2026 for 470+ universities and colleges.')}
           </p>
 
           {/* Action CTAs */}
@@ -74,76 +81,58 @@ export default function Home() {
               to="/analytics"
               className="btn-garvi text-base w-full sm:w-auto shadow-md hover:shadow-lg"
             >
-              <span>Explore Analytics Tool</span>
+              <span>{t('home.exploreAnalytics', 'Explore Analytics')}</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              to="/benchmarking"
-              className="btn-outline-garvi text-base w-full sm:w-auto hover:shadow-sm"
+              to="/login"
+              className="px-8 py-3.5 rounded-xl border border-slate-300 bg-white/90 text-slate-800 font-bold hover:bg-slate-50 hover:border-garvi-orange hover:text-garvi-orange transition-all duration-200 w-full sm:w-auto shadow-xs text-base"
             >
-              <PieChart className="w-4 h-4" />
-              <span>Benchmarking</span>
-            </Link>
-            <Link
-              to="/simulator"
-              className="btn-outline-garvi text-base w-full sm:w-auto hover:shadow-sm"
-            >
-              <Activity className="w-4 h-4" />
-              <span>Performance Simulator</span>
+              {t('home.instituteLogin', 'Institute Login')}
             </Link>
           </div>
 
-          {/* Verified Framework Stats Strip */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {[
-              { label: 'Core Pillars', value: '4', sub: 'TLR, RPC, GO, OI', icon: Award, color: 'text-amber-600 bg-amber-50' },
-              { label: 'GSIRF Indicators', value: '16', sub: 'Performance Metrics', icon: PieChart, color: 'text-blue-600 bg-blue-50' },
-              { label: 'Institutions Evaluated', value: '470+', sub: 'Across Gujarat', icon: Building2, color: 'text-emerald-600 bg-emerald-50' },
-              { label: 'Data Framework', value: '100%', sub: 'Objective & Verified', icon: ShieldCheck, color: 'text-purple-600 bg-purple-50' },
-            ].map((stat, i) => (
-              <div
-                key={i}
-                className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-slate-200/80 shadow-xs hover-lift text-left flex flex-col justify-between"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center`}>
-                    <stat.icon className="w-5 h-5" />
-                  </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">GSIRF</span>
-                </div>
-                <div>
-                  <div className="text-3xl font-extrabold text-slate-900 tracking-tight">{stat.value}</div>
-                  <div className="text-sm font-semibold text-slate-700 mt-0.5">{stat.label}</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{stat.sub}</div>
-                </div>
-              </div>
-            ))}
+          {/* Micro Trust Strip */}
+          <div className="mt-14 pt-8 border-t border-slate-200/60 max-w-2xl mx-auto flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-slate-500 font-medium">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              {t('home.verifiedInstitutions', '470+ Institutions Evaluated')}
+            </span>
+            <span className="h-3 w-px bg-slate-300 hidden sm:block" />
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-garvi-orange" />
+              {t('home.dataCollectionOpen', 'GSIRF 2026 Data Collection Open')}
+            </span>
+            <span className="h-3 w-px bg-slate-300 hidden sm:block" />
+            <span className="text-slate-600 font-semibold">
+              {t('home.deadlineNotice', 'Deadline: 31 July 2026')}
+            </span>
           </div>
         </div>
       </section>
 
-      {/* The 4 Core GSIRF Pillars Section */}
-      <section className="py-20 bg-white border-y border-slate-200/60">
+      {/* 4 Pillars of GSIRF */}
+      <section id="pillars" className="py-20 bg-white border-y border-slate-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-widest text-garvi-orange bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200/60">
-              Evaluation Methodology
+              {t('pillars.weightage', 'Weightage')} • GSIRF Framework
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4 tracking-tight">
-              The 4 Pillars of GSIRF Excellence
+              {t('home.pillarsTitle', 'The 4 Core Pillars of GSIRF Rating')}
             </h2>
             <p className="text-slate-600 mt-3 text-base sm:text-lg">
-              GARVI evaluates higher education institutions across four standardized pillars designed to measure holistic academic strength and societal impact.
+              {t('home.pillarsSubtitle', 'Gujarat State Institutional Rating Framework evaluates academic excellence across four internationally benchmarked core dimensions.')}
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 code: 'TLR',
                 weight: '30%',
-                title: 'Teaching, Learning & Resources',
-                desc: 'Faculty-student ratios, PhD qualifications, physical & digital library infrastructure, and annual expenditure per student.',
+                title: t('pillars.tlr', 'Teaching, Learning & Resources'),
+                desc: t('pillars.tlrDesc', 'Faculty-student ratio, faculty with PhD, financial resource utilization, and modern lab facilities.'),
                 icon: BookOpen,
                 borderColor: 'border-amber-200 hover:border-amber-400',
                 badgeColor: 'bg-amber-100 text-amber-800'
@@ -151,8 +140,8 @@ export default function Home() {
               {
                 code: 'RPC',
                 weight: '30%',
-                title: 'Research & Professional Practice',
-                desc: 'Indexed publications (Scopus / Web of Science), citation impact, research grants from state/central bodies, and IPR patents.',
+                title: t('pillars.rp', 'Research & Professional Practice'),
+                desc: t('pillars.rpDesc', 'Scopus/WoS publications, citations, IPR patents granted, and sponsored research funding.'),
                 icon: TrendingUp,
                 borderColor: 'border-blue-200 hover:border-blue-400',
                 badgeColor: 'bg-blue-100 text-blue-800'
@@ -160,8 +149,8 @@ export default function Home() {
               {
                 code: 'GO',
                 weight: '20%',
-                title: 'Graduation Outcomes',
-                desc: 'Annual university exam pass percentages, median placement packages, campus placements, and progression to higher studies.',
+                title: t('pillars.go', 'Graduation Outcomes'),
+                desc: t('pillars.goDesc', 'Median placement salary, percentage of students placed, higher education progression, and university exams.'),
                 icon: Award,
                 borderColor: 'border-emerald-200 hover:border-emerald-400',
                 badgeColor: 'bg-emerald-100 text-emerald-800'
@@ -169,8 +158,8 @@ export default function Home() {
               {
                 code: 'OI',
                 weight: '20%',
-                title: 'Outreach & Inclusivity',
-                desc: 'Diversity of students from outside Gujarat, gender balance, facilities for differently-abled students, and regional initiatives.',
+                title: t('pillars.oi', 'Outreach & Inclusivity'),
+                desc: t('pillars.oiDesc', 'Gender diversity ratio, students from outside Gujarat, economically/socially challenged student scholarships.'),
                 icon: Users,
                 borderColor: 'border-purple-200 hover:border-purple-400',
                 badgeColor: 'bg-purple-100 text-purple-800'
@@ -184,7 +173,7 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xl font-black text-slate-900 tracking-tight">{pillar.code}</span>
                     <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${pillar.badgeColor}`}>
-                      {pillar.weight} Weightage
+                      {pillar.weight} {t('pillars.weightage', 'Weightage')}
                     </span>
                   </div>
                   <h3 className="text-base font-bold text-slate-900 mb-2 leading-snug">
@@ -195,7 +184,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-slate-200/60 flex items-center gap-2 text-xs font-semibold text-garvi-orange">
-                  <span>Explore Metrics</span>
+                  <span>{t('home.launchModule', 'Explore Metrics')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </div>
@@ -209,142 +198,142 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-garvi-orange bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200/60">
-              Institutional Toolkit
+              {t('home.toolkitTitle', 'The GARVI Intelligence Toolkit')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4 tracking-tight">
-              Integrated Analytics &amp; Planning Suite
+              {t('home.toolkitSubtitle', 'Comprehensive multi-dimensional intelligence built for Gujarat Vice-Chancellors, Principals, and Education Administrators.')}
             </h2>
-            <p className="text-slate-600 mt-3 text-base sm:text-lg">
-              State-of-the-art interactive dashboards and scenario modeling tools designed to guide strategic decisions.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: 'Analytics Dashboard',
-                badge: 'Live Data',
+                title: t('modules.analyticsTitle', 'Executive Analytics'),
+                badge: 'PowerBI',
                 badgeColor: 'bg-emerald-100 text-emerald-800',
-                desc: 'Real-time performance analytics, parameter breakdowns, and historical rating trends for all 470+ Gujarat institutions.',
+                desc: t('modules.analyticsDesc', 'Statewide interactive dashboards, star distribution, and pillar performance metrics powered by PowerBI.'),
                 route: '/analytics',
                 icon: BarChart3,
-                buttonText: 'Open Analytics',
+                buttonText: t('home.exploreAnalytics', 'Open Analytics'),
                 features: ['Comprehensive PowerBI Dashboards', 'Rank & Score Visualizations', 'Parameter-Level Trend Analysis']
               },
               {
-                title: 'Peer Benchmarking Tool',
+                title: t('modules.benchmarkingTitle', 'Institutional Benchmarking'),
                 badge: 'Comparative',
                 badgeColor: 'bg-blue-100 text-blue-800',
-                desc: 'Direct head-to-head performance comparisons against peer institutions and state benchmark averages.',
+                desc: t('modules.benchmarkingDesc', 'Head-to-head peer comparisons across Teaching, Research, Placements, and Infrastructure metrics.'),
                 route: '/benchmarking',
                 icon: PieChart,
-                buttonText: 'Launch Benchmarking',
+                buttonText: t('nav.benchmarking', 'Launch Benchmarking'),
                 features: ['Peer Gap Identification', 'State Average Comparisons', 'Key Indicator Radar Charts']
               },
               {
-                title: 'Performance Simulator',
+                title: t('modules.simulatorTitle', 'GSIRF 2026 Simulator'),
                 badge: 'Predictive',
                 badgeColor: 'bg-purple-100 text-purple-800',
-                desc: 'Simulate strategic decisions—test how changes in faculty hiring, publications, or placements will shift your rating score.',
+                desc: t('modules.simulatorDesc', 'Predict your star rating by adjusting faculty counts, PhD staff, research publications, and lab budgets in real time.'),
                 route: '/simulator',
                 icon: Activity,
-                buttonText: 'Run Simulator',
-                features: ['What-If Scenario Planning', 'Weak Indicator Diagnosis', 'Projected Rank Modeling']
+                buttonText: t('nav.simulator', 'Launch Simulator'),
+                features: ['Real-Time Star Impact', 'Sensitivity & Goal Modeling', 'Download Strategy Action Plan']
               }
-            ].map((tool, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover-lift p-8 flex flex-col justify-between transition-all"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-garvi-orange to-garvi-gold flex items-center justify-center text-white shadow-sm">
-                      <tool.icon className="w-7 h-7" />
-                    </div>
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${tool.badgeColor}`}>
-                      {tool.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">{tool.title}</h3>
-                  <p className="text-sm text-slate-600 leading-relaxed mb-6">{tool.desc}</p>
-
-                  <ul className="space-y-2.5 mb-8">
-                    {tool.features.map((feat, idx) => (
-                      <li key={idx} className="flex items-center gap-2.5 text-xs text-slate-600 font-medium">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <Link
-                  to={tool.route}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 shadow-xs transition-opacity"
+            ].map((tool, i) => {
+              const Icon = tool.icon;
+              return (
+                <div
+                  key={i}
+                  className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xs hover:shadow-xl hover-lift transition-all duration-300 flex flex-col justify-between"
                 >
-                  <span>{tool.buttonText}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            ))}
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200/70 flex items-center justify-center text-garvi-orange">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <span className={`text-xs font-bold px-3 py-1 rounded-full ${tool.badgeColor}`}>
+                        {tool.badge}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-3">{tool.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed mb-6">{tool.desc}</p>
+                    <ul className="space-y-2 mb-8 border-t border-slate-100 pt-5">
+                      {tool.features.map((feature, j) => (
+                        <li key={j} className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <Link
+                    to={tool.route}
+                    className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-gradient-to-r hover:from-garvi-orange hover:to-garvi-gold hover:text-white transition-all shadow-xs"
+                  >
+                    <span>{tool.buttonText}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Purpose & About Section */}
-      <section id="about" className="py-20 bg-white border-t border-slate-200/60">
+      {/* Statewide Impact Metrics Strip */}
+      <section className="py-16 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-garvi-orange bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200/60">
-                Institutional Mission
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4 tracking-tight leading-tight">
-                Catalyzing Academic Excellence Across Gujarat
-              </h2>
-              <p className="text-base text-slate-600 mt-4 leading-relaxed">
-                GARVI serves as the flagship digital platform for the Gujarat State Institutional Rating Framework (GSIRF), an initiative spearheaded by the Knowledge Consortium of Gujarat (KCG) and the Department of Higher Education.
-              </p>
-              <p className="text-base text-slate-600 mt-3 leading-relaxed">
-                By making institutional performance transparent and actionable, GARVI helps universities identify weak indicators, allocate funding where it matters most, and drive continuous academic improvement.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  to="/dashboard"
-                  className="btn-garvi text-sm"
-                >
-                  <span>Access Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  to="/admin"
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 font-semibold text-sm text-slate-700 hover:bg-slate-50 transition"
-                >
-                  State Admin Portal
-                </Link>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="space-y-2">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-amber-400">470+</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-200">{t('home.statsInstitutions', 'Rated Institutions')}</div>
+              <p className="text-[11px] text-slate-400">{t('home.statsInstitutionsSub', 'Universities & Colleges in Gujarat')}</p>
             </div>
+            <div className="space-y-2">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-emerald-400">28</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-200">{t('home.statsStars', '5-Star Institutions')}</div>
+              <p className="text-[11px] text-slate-400">{t('home.statsStarsSub', 'Highest institutional excellence tier')}</p>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-blue-400">₹6.4 LPA</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-200">{t('home.statsMedian', 'Avg. Placement Package')}</div>
+              <p className="text-[11px] text-slate-400">{t('home.statsMedianSub', 'Statewide professional benchmark')}</p>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-orange-400">100%</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-200">{t('home.statsCompliance', 'Digital Submissions')}</div>
+              <p className="text-[11px] text-slate-400">{t('home.statsComplianceSub', 'GSIRF 2026 verification progress')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="bg-gradient-to-br from-amber-500/10 via-amber-50 to-orange-500/10 rounded-3xl p-8 border border-amber-200/70 shadow-sm space-y-4">
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Key Framework Advantages</h3>
-              {[
-                { title: 'Standardized Ratings', desc: 'Normalized across disciplines including Engineering, Management, Pharmacy, and General Universities.' },
-                { title: 'Objective Data Validation', desc: 'Cross-verified through institutional submissions, university records, and national research databases.' },
-                { title: 'Continuous Improvement', desc: 'Year-round benchmarking and simulation tools to help institutions track progress between cycles.' },
-                { title: 'Direct Policy Insights', desc: 'Empowers state education authorities with real-time district and institutional performance metrics.' }
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
-                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">{item.title}</h4>
-                    <p className="text-xs text-slate-600 mt-0.5">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
+      {/* CTA Box */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-amber-950/90 to-slate-900 p-8 sm:p-12 text-center shadow-xl border border-amber-900/40">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-garvi-orange/20 rounded-full blur-3xl pointer-events-none" />
+            <span className="inline-block text-xs uppercase tracking-widest font-extrabold text-amber-400 mb-3 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30">
+              Government of Gujarat • GSIRF 2026
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+              {t('home.ctaTitle', 'Ready to benchmark your institution?')}
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto mb-8">
+              {t('home.ctaSubtitle', 'Access institutional rankings, predictive simulations, and accreditation gap reports directly.')}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                to="/login"
+                className="btn-garvi text-sm w-full sm:w-auto shadow-md"
+              >
+                <span>{t('home.accessPortal', 'Access College Portal')}</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/admin"
+                className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all border border-white/20 w-full sm:w-auto"
+              >
+                {t('home.adminAccess', 'Admin Scrutiny Panel')}
+              </Link>
             </div>
           </div>
         </div>
@@ -362,7 +351,7 @@ export default function Home() {
                 </span>
               </div>
               <p className="text-sm text-slate-400 leading-relaxed max-w-md">
-                Gujarat Academic Ratings Visualization for Improvement. A data-driven analytics and institutional improvement initiative under the Gujarat State Institutional Rating Framework.
+                {t('home.heroSubtitle', 'Gujarat Academic Ratings Visualization for Improvement. A data-driven analytics and institutional improvement initiative under the Gujarat State Institutional Rating Framework.')}
               </p>
               <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-4 text-xs font-medium text-slate-300">
                 <a href="mailto:garvisupport@gmail.com" className="flex items-center gap-2 hover:text-garvi-orange transition-colors">
@@ -377,33 +366,37 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Platform Navigation</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+                {t('nav.brandSub', 'Platform Navigation')}
+              </h4>
               <ul className="space-y-2.5 text-xs text-slate-400">
-                <li><Link to="/" className="hover:text-garvi-orange transition-colors">Home</Link></li>
-                <li><Link to="/analytics" className="hover:text-garvi-orange transition-colors">Analytics Tool</Link></li>
-                <li><Link to="/benchmarking" className="hover:text-garvi-orange transition-colors">Peer Benchmarking</Link></li>
-                <li><Link to="/simulator" className="hover:text-garvi-orange transition-colors">Performance Simulator</Link></li>
-                <li><Link to="/dashboard" className="hover:text-garvi-orange transition-colors">Institutional Dashboard</Link></li>
+                <li><Link to="/" className="hover:text-garvi-orange transition-colors">{t('nav.home', 'Home')}</Link></li>
+                <li><Link to="/analytics" className="hover:text-garvi-orange transition-colors">{t('nav.analytics', 'Analytics')}</Link></li>
+                <li><Link to="/benchmarking" className="hover:text-garvi-orange transition-colors">{t('nav.benchmarking', 'Benchmarking')}</Link></li>
+                <li><Link to="/simulator" className="hover:text-garvi-orange transition-colors">{t('nav.simulator', 'Simulator')}</Link></li>
+                <li><Link to="/dashboard" className="hover:text-garvi-orange transition-colors">{t('dashboard.institutionalScorecard', 'Dashboard')}</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Portals &amp; Access</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+                {t('home.adminAccess', 'Portals & Access')}
+              </h4>
               <ul className="space-y-2.5 text-xs text-slate-400">
-                <li><Link to="/login" className="hover:text-garvi-orange transition-colors">Institutional Login</Link></li>
-                <li><Link to="/admin" className="hover:text-garvi-orange transition-colors">State Admin Portal</Link></li>
-                <li><a href="https://kcg.gujarat.gov.in" target="_blank" rel="noreferrer" className="hover:text-garvi-orange transition-colors">Knowledge Consortium of Gujarat (KCG)</a></li>
-                <li><a href="https://gujgov.edu.in" target="_blank" rel="noreferrer" className="hover:text-garvi-orange transition-colors">Education Dept., Govt. of Gujarat</a></li>
+                <li><Link to="/login" className="hover:text-garvi-orange transition-colors">{t('nav.login', 'Institutional Login')}</Link></li>
+                <li><Link to="/admin" className="hover:text-garvi-orange transition-colors">{t('nav.adminPortal', 'State Admin Portal')}</Link></li>
+                <li><a href="https://kcg.gujarat.gov.in" target="_blank" rel="noreferrer" className="hover:text-garvi-orange transition-colors">{t('common.kcgTitle', 'Knowledge Consortium of Gujarat (KCG)')}</a></li>
+                <li><a href="https://gujgov.edu.in" target="_blank" rel="noreferrer" className="hover:text-garvi-orange transition-colors">{t('common.deptHigherEd', 'Education Dept., Govt. of Gujarat')}</a></li>
               </ul>
             </div>
           </div>
 
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-            <p>© {currentYear} GARVI. All rights reserved.</p>
+            <p>© {currentYear} GARVI. {t('common.allRightsReserved', 'All rights reserved.')}</p>
             <div className="flex items-center gap-4 text-slate-400">
               <span>Developed by <strong className="text-slate-200">ICARE</strong></span>
               <span>•</span>
-              <span><strong className="text-slate-200">Government of Gujarat</strong></span>
+              <span><strong className="text-slate-200">{t('common.govGujarat', 'Government of Gujarat')}</strong></span>
             </div>
           </div>
         </div>
