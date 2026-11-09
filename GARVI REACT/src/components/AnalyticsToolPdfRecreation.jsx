@@ -120,14 +120,15 @@ export default function AnalyticsToolPdfRecreation() {
           { name: `GO\n${go}`, max: 100 }
         ],
         center: ['50%', '52%'],
-        radius: '68%',
+        radius: '52%',
+        axisNameGap: 8,
         splitNumber: 4,
         shape: 'polygon',
         axisName: {
-          color: '#1e293b',
+          color: '#0f172a',
           fontWeight: 700,
-          fontSize: 11,
-          lineHeight: 14
+          fontSize: 10,
+          lineHeight: 13
         },
         splitArea: {
           show: true,
@@ -1038,7 +1039,7 @@ export default function AnalyticsToolPdfRecreation() {
                 &gt;&gt; Parameter Performance 2024
               </span>
 
-              <div className="h-52 w-full my-1">
+              <div className="h-56 w-full my-1">
                 <ReactECharts
                   option={radarOption}
                   style={{ height: '100%', width: '100%' }}
@@ -1062,7 +1063,7 @@ export default function AnalyticsToolPdfRecreation() {
                 &gt;&gt; Yearly Comparison of Parameters
               </span>
 
-              <div className="h-52 w-full my-1">
+              <div className="h-56 w-full my-1">
                 <ReactECharts
                   option={yearlyParamOption}
                   style={{ height: '100%', width: '100%' }}
