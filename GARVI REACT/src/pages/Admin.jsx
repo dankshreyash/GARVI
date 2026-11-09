@@ -17,10 +17,19 @@ import {
   Globe,
   FileSpreadsheet,
   LogIn,
-  ExternalLink
+  ExternalLink,
+  Shield,
+  Lock,
+  LogOut,
+  BarChart3,
+  PieChart,
+  Activity,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { INSTITUTIONS_FROM_EXCEL } from '../data/institutionsRegistry';
+import { loginInstitution } from '../api/garviApi';
 
 export default function Admin() {
   const { lang, toggleLanguage, t } = useLanguage();
@@ -92,6 +101,46 @@ export default function Admin() {
   const [visiblePasswords, setVisiblePasswords] = useState({});
   const [navOpen, setNavOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('credentials'); // 'credentials' | 'scrutiny'
+
+  // Admin Authentication Gate State
+  const [isAdminAuthed, setIsAdminAuthed] = useState(() => {
+    return localStorage.getItem('garvi_user_role') === 'admin';
+  });
+  const [adminUser, setAdminUser] = useState('');
+  const [adminPass, setAdminPass] = useState('');
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [adminError, setAdminError] = useState('');
+  const [showAdminPass, setShowAdminPass] = useState(false);
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    if (!adminUser.trim() || !adminPass.trim()) {
+      setAdminError('Please enter both Administrator ID and Password.');
+      return;
+    }
+    setAdminLoading(true);
+    setAdminError('');
+    try {
+      const result = await loginInstitution(adminUser, adminPass);
+      if (result.role === 'admin' || localStorage.getItem('garvi_user_role') === 'admin') {
+        localStorage.setItem('garvi_user_role', 'admin');
+        setIsAdminAuthed(true);
+      } else {
+        setAdminError('Access Denied: This account does not have State Administrator privileges.');
+      }
+    } catch (err) {
+      setAdminError(err.message || 'Invalid administrator username or password.');
+    } finally {
+      setAdminLoading(false);
+    }
+  };
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('garvi_user_role');
+    localStorage.removeItem('garvi_auth_token');
+    setIsAdminAuthed(false);
+    setAdminPass('');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -178,6 +227,176 @@ export default function Admin() {
   const pendingCount = submissions.filter((s) => s.status === 'pending').length;
   const acceptedCount = submissions.filter((s) => s.status === 'accepted').length;
 
+  // =========================================================================
+  // 1. ADMIN AUTHENTICATION GATE (Prompt for Username & Password)
+  // =========================================================================
+  if (!isAdminAuthed) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-amber-950 text-white font-sans flex flex-col justify-between">
+        {/* Gate Header */}
+        <header className="border-b border-white/10 px-4 sm:px-8 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-center p-0.5">
+              <img
+                src="/kcg_gujarat_transparent.png"
+                alt="GARVI"
+                className="h-full w-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                }}
+              />
+            </div>
+            <span className="text-xl font-black text-amber-400 tracking-tight">GARVI</span>
+            <span className="text-xs uppercase tracking-wider text-slate-400 font-bold hidden sm:inline">
+              State Rating Authority
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleLanguage}
+              type="button"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-400/40 bg-white/5 hover:bg-white/10 text-amber-300 font-bold text-xs tracking-wide transition cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>{lang === 'en' ? 'ગુજરાતી' : 'English'}</span>
+            </button>
+            <Link
+              to="/"
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-slate-200 transition"
+            >
+              Back to Home
+            </Link>
+          </div>
+        </header>
+
+        {/* Gate Body */}
+        <div className="flex-1 flex items-center justify-center px-4 py-12">
+          <div className="w-full max-w-md bg-slate-900/90 border border-amber-500/30 backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-2xl shadow-amber-500/10 relative overflow-hidden">
+            {/* Top decorative glow */}
+            <div className="absolute -top-24 -left-24 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-orange-500/20 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="text-center mb-6">
+              <div className="inline-flex p-3.5 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 mb-4">
+                <Shield className="w-8 h-8" />
+              </div>
+              <h1 className="text-2xl font-black tracking-tight text-white">
+                Administrator Access
+              </h1>
+              <p className="text-xs text-amber-200/80 font-medium mt-1">
+                Restricted State Evaluation & Scrutiny Portal
+              </p>
+              <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-400/30 text-[11px] font-semibold text-amber-300">
+                <Lock className="w-3 h-3" /> Credentials Required
+              </div>
+            </div>
+
+            {adminError && (
+              <div className="mb-5 p-3 rounded-xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs flex items-center gap-2">
+                <XCircle className="w-4 h-4 shrink-0 text-red-400" />
+                <span>{adminError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Administrator User ID
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={adminUser}
+                    onChange={(e) => setAdminUser(e.target.value)}
+                    placeholder="admin or garvisupport@gmail.com"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Master Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showAdminPass ? 'text' : 'password'}
+                    value={adminPass}
+                    onChange={(e) => setAdminPass(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/15 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition pr-11"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminPass(!showAdminPass)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition p-1"
+                  >
+                    {showAdminPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={adminLoading}
+                className="w-full mt-2 py-3.5 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 text-sm transition-all cursor-pointer disabled:opacity-50"
+              >
+                {adminLoading ? (
+                  <Clock className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Shield className="w-4 h-4" />
+                    <span>Enter Administration Center</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Quick Helper Credentials Card */}
+            <div className="mt-6 pt-5 border-t border-white/10 text-center">
+              <p className="text-[11px] text-slate-400 mb-2">Default Administrator Credentials:</p>
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdminUser('admin');
+                    setAdminPass('Admin@GARVI2026');
+                    setAdminError('');
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/30 text-amber-300 font-mono text-xs font-bold transition cursor-pointer"
+                >
+                  Fill: admin / Admin@GARVI2026
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdminUser('garvisupport@gmail.com');
+                    setAdminPass('Icare@2026');
+                    setAdminError('');
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-slate-300 font-mono text-xs font-bold transition cursor-pointer"
+                >
+                  Fill: garvisupport
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Gate Footer */}
+        <footer className="py-4 text-center text-xs text-slate-500 border-t border-white/5">
+          GARVI Gujarat Academic Ratings Visualization for Improvement • Official State Government Portal
+        </footer>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // 2. AUTHENTICATED ADMINISTRATOR VIEW (Full Access to Everything)
+  // =========================================================================
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
       {/* Top Header */}
@@ -198,9 +417,10 @@ export default function Admin() {
               <span className="text-xl font-black text-gradient-garvi tracking-tight">GARVI</span>
             </Link>
             <span className="h-4 w-px bg-slate-300 hidden sm:block" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:block">
-              {t('admin.title', 'State Scrutiny & Administration')}
-            </span>
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-extrabold">
+              <Shield className="w-3.5 h-3.5 text-garvi-orange" />
+              <span>State Administrator</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -214,14 +434,6 @@ export default function Admin() {
               <span>{lang === 'en' ? 'ગુજરાતી' : 'English'}</span>
             </button>
 
-            <Link
-              to="/login"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition"
-            >
-              <LogIn className="w-3.5 h-3.5 text-garvi-orange" />
-              <span>College Login</span>
-            </Link>
-
             <button
               onClick={handleExportCSV}
               className="btn-garvi text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-xs cursor-pointer"
@@ -230,6 +442,16 @@ export default function Admin() {
               <Download className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Export Excel Master (.CSV)</span>
               <span className="sm:hidden">Export</span>
+            </button>
+
+            {/* Logout Admin */}
+            <button
+              onClick={handleAdminLogout}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-700 border border-slate-200 hover:border-red-200 text-xs font-bold transition cursor-pointer"
+              title="Sign out from Administrator mode"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
 
             <button
@@ -247,13 +469,113 @@ export default function Admin() {
             <Link to="/analytics" className="block py-1 text-slate-700">{t('nav.analytics', 'Analytics')}</Link>
             <Link to="/benchmarking" className="block py-1 text-slate-700">{t('nav.benchmarking', 'Benchmarking')}</Link>
             <Link to="/simulator" className="block py-1 text-slate-700">{t('nav.simulator', 'Simulator')}</Link>
-            <Link to="/dashboard" className="block py-1 text-slate-700">{t('nav.login', 'College Dashboard')}</Link>
+            <button onClick={handleAdminLogout} className="block w-full text-left py-1 text-red-600 font-bold">
+              Logout Administrator
+            </button>
           </div>
         )}
       </header>
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* ========================================================================= */}
+        {/* ADMIN COMMAND CENTER: UNRESTRICTED FULL ACCESS TO ALL TOOLS              */}
+        {/* ========================================================================= */}
+        <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-amber-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-500/20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-amber-500/15 via-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 relative z-10">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold mb-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Full Administrative Authority</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                Administrator Command Hub
+              </h2>
+              <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl">
+                You have unrestricted administrative privileges to evaluate and compare all 469 Gujarat institutions across GSIRF rating indicators, benchmark targets, and simulation projections.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Supabase Live (469 Institutions)</span>
+              </span>
+            </div>
+          </div>
+
+          {/* 3 Full Access Tool Action Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
+            {/* Tool 1: Analytics */}
+            <Link
+              to="/analytics"
+              className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between"
+            >
+              <div>
+                <div className="h-10 w-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 mb-3 group-hover:scale-110 transition-transform">
+                  <BarChart3 className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                  Deep Analytics Tool
+                </h3>
+                <p className="text-xs text-slate-300 mt-1 line-clamp-2">
+                  Inspect ECharts Radar, 16 indicator bars, category standings, and Excel score cards for any college.
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform">
+                <span>Open Full Analytics</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
+
+            {/* Tool 2: Benchmarking */}
+            <Link
+              to="/benchmarking"
+              className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-400/50 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between"
+            >
+              <div>
+                <div className="h-10 w-10 rounded-xl bg-orange-500/20 border border-orange-400/40 flex items-center justify-center text-orange-400 mb-3 group-hover:scale-110 transition-transform">
+                  <PieChart className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-white group-hover:text-orange-300 transition-colors">
+                  Multi-College Benchmarking
+                </h3>
+                <p className="text-xs text-slate-300 mt-1 line-clamp-2">
+                  Compare 2 or 3 colleges head-to-head across TLR, RP, GO, and OI with category top performers.
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-orange-400 group-hover:translate-x-1 transition-transform">
+                <span>Open Benchmarking</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
+
+            {/* Tool 3: Simulator */}
+            <Link
+              to="/simulator"
+              className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between"
+            >
+              <div>
+                <div className="h-10 w-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 mb-3 group-hover:scale-110 transition-transform">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                  What-If Score Simulator
+                </h3>
+                <p className="text-xs text-slate-300 mt-1 line-clamp-2">
+                  Test indicator improvements, simulate CGPA gains, and model predicted star rating movements.
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-amber-400 group-hover:translate-x-1 transition-transform">
+                <span>Open Simulator</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
+          </div>
+        </section>
+
         {/* Header Hero */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 fade-in">
           <div>

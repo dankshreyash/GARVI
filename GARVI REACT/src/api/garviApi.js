@@ -18,12 +18,15 @@ export async function loginInstitution(username, password) {
       throw new Error(data.error || 'Authentication failed');
     }
 
-    // Save JWT token in sessionStorage (or localStorage)
+    // Save JWT token and role in localStorage
     if (data.token) {
       localStorage.setItem('garvi_auth_token', data.token);
     }
+    if (data.role) {
+      localStorage.setItem('garvi_user_role', data.role);
+    }
 
-    return data.institution;
+    return { ...data.institution, role: data.role || data.institution?.role || 'college' };
   } catch (err) {
     throw err;
   }

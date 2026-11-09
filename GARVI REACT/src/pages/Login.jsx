@@ -35,13 +35,24 @@ export default function Login() {
 
       // Save sanitized institution object in localStorage (NO PASSWORDS!)
       localStorage.setItem('garvi_active_institution', JSON.stringify(inst));
-      setMsg({
-        type: 'success',
-        text: lang === 'gu'
-          ? `${inst.nameGu || inst.name} તરીકે લૉગિન સફળ! ડેશબોર્ડ ખોલી રહ્યું છે...`
-          : `Login verified by PostgreSQL Backend for ${inst.name}! Loading Recharts...`
-      });
-      setTimeout(() => navigate('/dashboard'), 1000);
+      
+      if (inst.role === 'admin') {
+        setMsg({
+          type: 'success',
+          text: lang === 'gu'
+            ? 'એડમિનિસ્ટ્રેટર લૉગિન સફળ! એડમિન પોર્ટલ ખોલી રહ્યું છે...'
+            : 'Admin authentication verified! Redirecting to State Admin Portal...'
+        });
+        setTimeout(() => navigate('/admin'), 800);
+      } else {
+        setMsg({
+          type: 'success',
+          text: lang === 'gu'
+            ? `${inst.nameGu || inst.name} તરીકે લૉગિન સફળ! ડેશબોર્ડ ખોલી રહ્યું છે...`
+            : `Login verified by PostgreSQL Backend for ${inst.name}! Loading Recharts...`
+        });
+        setTimeout(() => navigate('/dashboard'), 1000);
+      }
     } catch (apiErr) {
       console.warn('Backend login attempt error:', apiErr.message);
       setMsg({
