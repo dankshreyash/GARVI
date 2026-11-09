@@ -25,6 +25,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root ping endpoint for cron/uptime monitors
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'GARVI API Backend',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
