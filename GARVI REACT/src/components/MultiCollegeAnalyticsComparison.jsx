@@ -351,11 +351,15 @@ export default function MultiCollegeAnalyticsComparison() {
             </div>
           </div>
 
-          <div className="h-72 w-full">
+          <div className="h-96 w-full flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData}>
+              <RadarChart cx="50%" cy="42%" outerRadius="58%" data={radarData}>
                 <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="subject" stroke="#64748b" tick={{ fontSize: 12, fontWeight: 700 }} />
+                <PolarAngleAxis
+                  dataKey="subject"
+                  stroke="#334155"
+                  tick={{ fontSize: 12, fontWeight: 800, fill: '#0f172a' }}
+                />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" />
                 {selectedColleges.map((c, idx) => (
                   <Radar
@@ -371,7 +375,14 @@ export default function MultiCollegeAnalyticsComparison() {
                   formatter={(val, name) => [`${val} points`, name]}
                   contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: 12, color: '#fff', fontSize: 12 }}
                 />
-                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
+                <Legend
+                  verticalAlign="bottom"
+                  wrapperStyle={{
+                    paddingTop: '24px',
+                    fontSize: '11px',
+                    lineHeight: '18px'
+                  }}
+                />
               </RadarChart>
             </ResponsiveContainer>
           </div>
@@ -393,7 +404,7 @@ export default function MultiCollegeAnalyticsComparison() {
             </div>
           </div>
 
-          <div className="h-72 w-full">
+          <div className="h-96 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={parameterBarData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
