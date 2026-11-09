@@ -1,0 +1,242 @@
+{
+  "Agriculture": {
+    "count": 7,
+    "topPerformer": {
+      "name": "KAMDHENU UNIVERSITY",
+      "total": 63.47,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "ANAND AGRICULTURAL UNIVERSITY"
+    },
+    "averages": {
+      "TLR": 73.09,
+      "RP": 36.78,
+      "GO": 65.91,
+      "OI": 56.12,
+      "Total": 51.76
+    },
+    "benchmarks": {
+      "TLR": 86.42,
+      "RP": 67.5,
+      "GO": 89.69,
+      "OI": 84.32
+    }
+  },
+  "Architecture": {
+    "count": 6,
+    "topPerformer": {
+      "name": "CEPT UNIVERSITY ARCHITECTURE",
+      "total": 74.53,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "INSTITUTE OF ARCHITECTURE AND PLANNING, NIRMA UNIVERSITY"
+    },
+    "averages": {
+      "TLR": 69.93,
+      "RP": 47.0,
+      "GO": 72.52,
+      "OI": 72.0,
+      "Total": 59.07
+    },
+    "benchmarks": {
+      "TLR": 80.4,
+      "RP": 76.0,
+      "GO": 90.35,
+      "OI": 91.0
+    }
+  },
+  "College": {
+    "count": 315,
+    "topPerformer": {
+      "name": "P D PATEL INSTITUTE OF APPLIED SCIENCES",
+      "total": 84.26,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "INDUKAKA IPCOWALA INSTITUTE OF MANAGEMENT"
+    },
+    "averages": {
+      "TLR": 43.19,
+      "RP": 14.85,
+      "GO": 56.31,
+      "OI": 48.46,
+      "Total": 38.43
+    },
+    "benchmarks": {
+      "TLR": 88.28,
+      "RP": 100.0,
+      "GO": 100.0,
+      "OI": 99.92
+    }
+  },
+  "Dental": {
+    "count": 2,
+    "topPerformer": {
+      "name": "NARSINHBHAI PATEL DENTAL COLLEGE & HOSPITAL",
+      "total": 66.95,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "GOVERNMENT DENTAL COLLEGE AND HOSPITAL, JAMNAGAR"
+    },
+    "averages": {
+      "TLR": 70.22,
+      "RP": 35.0,
+      "GO": 78.59,
+      "OI": 69.5,
+      "Total": 54.23
+    },
+    "benchmarks": {
+      "TLR": 75.19,
+      "RP": 70.0,
+      "GO": 99.88,
+      "OI": 75.0
+    }
+  },
+  "Engineering": {
+    "count": 37,
+    "topPerformer": {
+      "name": "INSTITUTE OF TECHNOLOGY, NIRMA UNIVERSITY",
+      "total": 71.08,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "L D COLLEGE OF ENGINEERING"
+    },
+    "averages": {
+      "TLR": 59.22,
+      "RP": 37.85,
+      "GO": 53.4,
+      "OI": 56.64,
+      "Total": 45.46
+    },
+    "benchmarks": {
+      "TLR": 88.15,
+      "RP": 79.44,
+      "GO": 94.21,
+      "OI": 94.26
+    }
+  },
+  "Law": {
+    "count": 16,
+    "topPerformer": {
+      "name": "GUJARAT NATIONAL LAW UNIVERSITY",
+      "total": 84.84,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "INSTITUTE OF LAW, NIRMA UNIVERSITY"
+    },
+    "averages": {
+      "TLR": 56.48,
+      "RP": 24.74,
+      "GO": 52.22,
+      "OI": 56.89,
+      "Total": 45.05
+    },
+    "benchmarks": {
+      "TLR": 92.92,
+      "RP": 95.98,
+      "GO": 95.44,
+      "OI": 97.99
+    }
+  },
+  "Management": {
+    "count": 18,
+    "topPerformer": {
+      "name": "PARUL INSTITUTE OF MANAGEMENT AND RESEARCH",
+      "total": 71.98,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "INTERNATIONAL AGRIBUSINESS MANAGEMENT INSTITUTE"
+    },
+    "averages": {
+      "TLR": 55.17,
+      "RP": 19.05,
+      "GO": 60.6,
+      "OI": 60.89,
+      "Total": 40.48
+    },
+    "benchmarks": {
+      "TLR": 85.28,
+      "RP": 69.69,
+      "GO": 96.98,
+      "OI": 88.73
+    }
+  },
+  "Medical": {
+    "count": 13,
+    "topPerformer": {
+      "name": "GMERS MEDICAL COLLEGE",
+      "total": 63.85,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "ASHOK & RITA PATEL INSTITUTE OF PHYSIOTHERAPY"
+    },
+    "averages": {
+      "TLR": 66.64,
+      "RP": 19.51,
+      "GO": 66.93,
+      "OI": 58.69,
+      "Total": 45.1
+    },
+    "benchmarks": {
+      "TLR": 82.01,
+      "RP": 63.64,
+      "GO": 88.78,
+      "OI": 87.73
+    }
+  },
+  "Pharmacy": {
+    "count": 17,
+    "topPerformer": {
+      "name": "INSTITUTE OF PHARMACY, NIRMA UNIVERSITY",
+      "total": 73.5,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "L M COLLEGE OF PHARMACY"
+    },
+    "averages": {
+      "TLR": 68.86,
+      "RP": 36.79,
+      "GO": 65.17,
+      "OI": 67.69,
+      "Total": 51.5
+    },
+    "benchmarks": {
+      "TLR": 88.42,
+      "RP": 73.56,
+      "GO": 89.92,
+      "OI": 98.69
+    }
+  },
+  "University": {
+    "count": 38,
+    "topPerformer": {
+      "name": "GUJARAT UNIVERSITY",
+      "total": 71.76,
+      "rank": 1
+    },
+    "topImprover": {
+      "name": "PANDIT DEENDAYAL ENERGY UNIVERSITY"
+    },
+    "averages": {
+      "TLR": 59.85,
+      "RP": 41.45,
+      "GO": 64.54,
+      "OI": 69.88,
+      "Total": 50.29
+    },
+    "benchmarks": {
+      "TLR": 87.06,
+      "RP": 81.46,
+      "GO": 100.0,
+      "OI": 95.93
+    }
+  }
+}

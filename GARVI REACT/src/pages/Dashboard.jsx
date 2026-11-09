@@ -5,14 +5,10 @@ import {
   PieChart,
   Activity,
   HelpCircle,
-  FileText,
-  Download,
   CheckCircle2,
   Clock,
   LogOut,
-  Building2,
   Calendar,
-  Sparkles,
   ArrowRight,
   Layers,
   ChevronRight,
@@ -24,6 +20,8 @@ import {
   Check
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { INSTITUTIONS_REGISTRY } from '../data/institutionsRegistry';
+import InstitutionalRechartsSuite from '../components/InstitutionalRechartsSuite';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -31,6 +29,15 @@ export default function Dashboard() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [dataSubmissionModal, setDataSubmissionModal] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  // Active authenticated institution or default to Anand Law College
+  const [activeInst, setActiveInst] = useState(() => {
+    try {
+      const stored = localStorage.getItem('garvi_active_institution');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return INSTITUTIONS_REGISTRY[0]; // Anand Law College by default
+  });
 
   const [daysRemaining] = useState(() => {
     const deadline = new Date('2026-07-31');
@@ -66,9 +73,20 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     if (window.confirm(lang === 'gu' ? 'શું તમે ખરેખર લૉગઆઉટ કરવા માંગો છો?' : 'Are you sure you want to sign out?')) {
-      navigate('/');
+      localStorage.removeItem('garvi_active_institution');
+      navigate('/login');
     }
   };
+
+  const switchDemoInstitution = (uid) => {
+    const found = INSTITUTIONS_REGISTRY.find((i) => i.uid === uid);
+    if (found) {
+      setActiveInst(found);
+      localStorage.setItem('garvi_active_institution', JSON.stringify(found));
+    }
+  };
+
+  const badgeSlug = activeInst.star >= 5 ? 'gsirf-5star-badge.svg' : 'gsirf-4star-badge.svg';
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-16" onClick={() => profileOpen && setProfileOpen(false)}>
@@ -92,11 +110,29 @@ export default function Dashboard() {
               </Link>
               <span className="h-4 w-px bg-slate-300 hidden sm:block" />
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:block">
-                {lang === 'gu' ? 'સંસ્થાકીય ડેશબોર્ડ' : 'Institutional Dashboard'}
+                {lang === 'gu' ? 'સંસ્થાકીય ડેશબોર્ડ' : 'Institutional Analytics Dashboard'}
               </span>
             </div>
 
             <div className="flex items-center gap-2.5">
+              {/* Institution Quick Switcher for Testing */}
+              <div className="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => switchDemoInstitution('anand_law')}
+                  className={`px-2.5 py-1 rounded-lg transition ${activeInst.uid === 'anand_law' ? 'bg-white text-garvi-orange shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  Anand Law
+                </button>
+                <button
+                  type="button"
+                  onClick={() => switchDemoInstitution('ahmedabad_uni')}
+                  className={`px-2.5 py-1 rounded-lg transition ${activeInst.uid === 'ahmedabad_uni' ? 'bg-white text-blue-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  Ahmedabad Uni
+                </button>
+              </div>
+
               {/* Language Switcher Pill */}
               <button
                 onClick={toggleLanguage}
@@ -125,29 +161,29 @@ export default function Dashboard() {
                   }}
                 >
                   <div className="w-7 h-7 bg-gradient-to-br from-garvi-orange to-garvi-gold rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-xs">
-                    GU
+                    {activeInst.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="text-left hidden sm:block">
-                    <span className="text-xs font-bold text-slate-900 block leading-tight">
-                      {lang === 'gu' ? 'ગુજરાત યુનિવર્સિટી' : 'Gujarat University'}
+                    <span className="text-xs font-bold text-slate-900 block leading-tight truncate max-w-[140px]">
+                      {activeInst.name}
                     </span>
                     <span className="text-[10px] text-slate-400 font-medium leading-none">
-                      {lang === 'gu' ? 'IQAC સંયોજક' : 'IQAC Coordinator'}
+                      {activeInst.uid}
                     </span>
                   </div>
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 py-2 animate-in fade-in">
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 py-2 animate-in fade-in">
                     <div className="px-4 py-2 border-b border-slate-100">
-                      <p className="text-xs font-bold text-slate-900">Gujarat University</p>
-                      <p className="text-[11px] text-slate-500">ID: GUJ-UNI-104</p>
+                      <p className="text-xs font-bold text-slate-900">{activeInst.name}</p>
+                      <p className="text-[11px] text-slate-500 font-mono">ID: {activeInst.instId}</p>
                     </div>
+                    <Link to="/admin" className="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
+                      Admin Credentials Registry
+                    </Link>
                     <a href="#settings" className="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
                       {lang === 'gu' ? 'સંસ્થાકીય પ્રોફાઇલ' : 'Institutional Profile'}
-                    </a>
-                    <a href="#submissions" className="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
-                      {lang === 'gu' ? 'સબમિશન ઇતિહાસ' : 'Submission History'}
                     </a>
                     <hr className="my-1 border-slate-100" />
                     <button
@@ -167,28 +203,10 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Welcome Header Strip */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 fade-in">
-          <div>
-            <div className="flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-garvi-orange" />
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                {lang === 'gu' ? 'ગુજરાત યુનિવર્સિટી, અમદાવાદ' : 'Gujarat University, Ahmedabad'}
-              </h1>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              {lang === 'gu' ? 'GSIRF સંસ્થાકીય ID: ' : 'GSIRF Institutional ID: '}
-              <strong className="text-slate-700 font-mono">GUJ-UNI-104</strong> • {lang === 'gu' ? 'રાજ્ય યુનિવર્સિટી શ્રેણી' : 'State University Category'}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200/80 text-xs font-bold">
-              <Sparkles className="w-3.5 h-3.5 text-garvi-orange" /> {t('dashboard.starRating', '4-Star ★★★★☆')}
-            </span>
-          </div>
-        </div>
+        {/* Recharts Analytics Suite (Dynamic for Logged-In College) */}
+        <InstitutionalRechartsSuite inst={activeInst} lang={lang} />
 
-        {/* GSIRF 2026 Collection Banner Card */}
+        {/* GSIRF 2026 Data Collection Banner Card */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden fade-in">
           <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-garvi-gold p-6 sm:p-8 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="max-w-2xl space-y-2">
@@ -301,7 +319,7 @@ export default function Dashboard() {
                 {t('modules.benchmarkingTitle', 'Peer Benchmarking')}
               </h3>
               <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                {t('modules.benchmarkingDesc', 'Compare Gujarat University against top universities like IIT-GN, SVNIT, and DA-IICT across all 4 pillars.')}
+                Compare {activeInst.name} against leading colleges across Gujarat on TLR, RPC, GO, and OI.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
@@ -322,105 +340,12 @@ export default function Dashboard() {
                 {t('modules.simulatorTitle', 'GSIRF 2026 Simulator')}
               </h3>
               <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                {t('modules.simulatorDesc', 'Test hypothetical scenarios to see how increasing research citations or hiring PhD faculties improves your score.')}
+                Simulate how hiring PhD faculty or publishing 10 more research papers will boost your rating.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-purple-600">
               <span>{t('nav.simulator', 'Launch Simulator')}</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-        </div>
-
-        {/* Detailed Scorecard & Quality Action Plan Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Official Scorecard */}
-          <div className="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">{t('dashboard.institutionalScorecard', 'GSIRF 2025 Institutional Scorecard')}</h3>
-                <p className="text-xs text-slate-500">{t('dashboard.scoreOut', 'Published by KCG • Department of Higher Education')}</p>
-              </div>
-              <button
-                onClick={() => alert(lang === 'gu' ? 'પીડીએફ સ્કોરકાર્ડ ડાઉનલોડ થઈ રહ્યું છે...' : 'Downloading GSIRF 2025 Official Institutional Scorecard (PDF)...')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-garvi-orange text-xs font-bold text-slate-700 hover:text-garvi-orange transition shadow-2xs cursor-pointer"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>{t('dashboard.downloadReport', 'Scorecard PDF')}</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">TLR Score</span>
-                <span className="text-2xl font-black text-slate-900">26.8 <span className="text-xs font-normal text-slate-400">/ 30</span></span>
-                <span className="text-[10px] text-emerald-600 font-semibold block mt-1">89% Efficiency</span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">RPC Score</span>
-                <span className="text-2xl font-black text-slate-900">24.5 <span className="text-xs font-normal text-slate-400">/ 30</span></span>
-                <span className="text-[10px] text-blue-600 font-semibold block mt-1">512 Scopus Pubs</span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">GO Score</span>
-                <span className="text-2xl font-black text-slate-900">17.4 <span className="text-xs font-normal text-slate-400">/ 20</span></span>
-                <span className="text-[10px] text-emerald-600 font-semibold block mt-1">88.5% Placed</span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">OI Score</span>
-                <span className="text-2xl font-black text-slate-900">15.9 <span className="text-xs font-normal text-slate-400">/ 20</span></span>
-                <span className="text-[10px] text-amber-600 font-semibold block mt-1">48% Female Ratio</span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-amber-950 block">{t('dashboard.actionPlan', 'Quality Improvement Roadmap')}</span>
-                <span className="text-[11px] text-amber-800">
-                  {lang === 'gu' ? '૨૦૨૬ માં ૫-સ્ટાર સ્તર સુધી પહોંચવા માટે વધુ ૫.૬ પોઇન્ટની જરૂર છે.' : 'Need +5.6 points in RPC & OI to achieve 5-Star status in 2026.'}
-                </span>
-              </div>
-              <Link to="/simulator" className="text-xs font-bold text-garvi-orange underline hover:text-amber-800">
-                {lang === 'gu' ? 'સિમ્યુલેટ કરો' : 'Simulate Roadmap'} →
-              </Link>
-            </div>
-          </div>
-
-          {/* Quick Actions & Downloads */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-            <h3 className="text-base font-bold text-slate-900">{lang === 'gu' ? 'સંસાધનો અને દસ્તાવેજો' : 'Resources & Guidance'}</h3>
-            <div className="space-y-3">
-              <button
-                onClick={() => alert(lang === 'gu' ? 'GSIRF ૨૦૨૬ એક્સેલ ટેમ્પલેટ ડાઉનલોડ થઈ રહ્યું છે...' : 'Downloading GSIRF 2026 Official Excel Template (.xlsx)...')}
-                className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-garvi-orange hover:bg-amber-50/40 transition text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <FileText className="w-4 h-4 text-garvi-orange" />
-                  <div>
-                    <span className="text-xs font-bold text-slate-800 block">
-                      {t('dashboard.downloadTemplate', 'Download Excel Template')}
-                    </span>
-                    <span className="text-[10px] text-slate-400">GSIRF_2026_Data_Template.xlsx</span>
-                  </div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => alert(lang === 'gu' ? 'માર્ગદર્શિકા પીડીએફ ડાઉનલોડ થઈ રહી છે...' : 'Downloading GSIRF 2026 Rating Guidelines & Norms (PDF)...')}
-                className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 hover:border-garvi-orange hover:bg-amber-50/40 transition text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <FileText className="w-4 h-4 text-blue-600" />
-                  <div>
-                    <span className="text-xs font-bold text-slate-800 block">
-                      {lang === 'gu' ? 'રેટિંગ નિયમાવલી અને માર્ગદર્શિકા' : 'Rating Norms & Methodology'}
-                    </span>
-                    <span className="text-[10px] text-slate-400">GSIRF_Methodology_Manual_v2.pdf</span>
-                  </div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
             </div>
           </div>
         </div>
@@ -435,18 +360,18 @@ export default function Dashboard() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    4-STAR &amp; 5-STAR BENEFIT
+                    VERIFIED ACCREDITATION
                   </span>
-                  <span className="text-xs text-slate-400 font-medium">Anti-Fraud Verification</span>
+                  <span className="text-xs text-slate-400 font-medium">Anti-Fraud Feature</span>
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mt-0.5">
-                  {lang === 'gu' ? 'તમારી વેબસાઇટ માટે પ્રમાણિત ડિજિટલ બેજ' : 'Verifiable Digital Badge for Your Website'}
+                  Verifiable Digital Badge for {activeInst.name}
                 </h3>
               </div>
             </div>
 
             <Link
-              to="/verify/GUJ-UNI-104"
+              to={`/verify/${activeInst.instId || 'ALC-LAW-207'}`}
               target="_blank"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-garvi-orange transition text-xs font-bold shadow-xs"
             >
@@ -462,15 +387,15 @@ export default function Dashboard() {
                 {lang === 'gu' ? 'લાઇવ બેજ પૂર્વાવલોકન (વેબસાઇટ પર કેવું દેખાશે):' : 'Live Badge Preview (How it appears on your website):'}
               </span>
               <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center justify-center gap-3">
-                <Link to="/verify/GUJ-UNI-104" target="_blank" className="hover:scale-105 transition-transform" title="Click to verify">
+                <Link to={`/verify/${activeInst.instId || 'ALC-LAW-207'}`} target="_blank" className="hover:scale-105 transition-transform" title="Click to verify">
                   <img
-                    src="/badges/gsirf-4star-badge.svg"
-                    alt="GSIRF 4-Star Verified Institution"
+                    src={`/badges/${badgeSlug}`}
+                    alt="GSIRF Verified Institution"
                     className="max-w-full h-auto drop-shadow-sm cursor-pointer"
                   />
                 </Link>
                 <span className="text-[11px] text-slate-400 font-medium text-center">
-                  💡 {lang === 'gu' ? 'વિદ્યાર્થીઓ જ્યારે તમારી સાઇટ પર આ બેજ પર ક્લિક કરે છે, ત્યારે તેઓ સીધા GARVI ના સત્તાવાર ચકાસણી પેજ પર પહોંચે છે.' : 'When students or recruiters click this badge on your website, it opens the official tamper-proof verification page on GARVI.'}
+                  💡 When students click this badge on your website, it opens the official tamper-proof verification page on GARVI.
                 </span>
               </div>
             </div>
@@ -484,7 +409,7 @@ export default function Dashboard() {
                 </span>
                 <button
                   onClick={() => {
-                    const snippet = `<a href="https://garvi.gujarat.gov.in/verify/GUJ-UNI-104" target="_blank" rel="noopener">\n  <img src="https://garvi.gujarat.gov.in/badges/gsirf-4star-badge.svg" alt="GSIRF 4-Star Verified Institution" width="360" height="84" />\n</a>`;
+                    const snippet = `<a href="https://garvi.gujarat.gov.in/verify/${activeInst.instId || 'ALC-LAW-207'}" target="_blank" rel="noopener">\n  <img src="https://garvi.gujarat.gov.in/badges/${badgeSlug}" alt="GSIRF Verified Institution" width="360" height="84" />\n</a>`;
                     navigator.clipboard?.writeText(snippet);
                     setCopiedCode(true);
                     setTimeout(() => setCopiedCode(false), 2000);
@@ -498,8 +423,8 @@ export default function Dashboard() {
 
               <div className="bg-slate-900 rounded-2xl p-4 font-mono text-[11px] text-amber-200/90 overflow-x-auto border border-slate-800 leading-relaxed shadow-inner">
                 <code>
-                  &lt;a href=&quot;https://garvi.gujarat.gov.in/verify/GUJ-UNI-104&quot; target=&quot;_blank&quot;&gt;<br />
-                  &nbsp;&nbsp;&lt;img src=&quot;https://garvi.gujarat.gov.in/badges/gsirf-4star-badge.svg&quot; alt=&quot;GSIRF 4-Star Verified Institution&quot; /&gt;<br />
+                  &lt;a href=&quot;https://garvi.gujarat.gov.in/verify/{activeInst.instId || 'ALC-LAW-207'}&quot; target=&quot;_blank&quot;&gt;<br />
+                  &nbsp;&nbsp;&lt;img src=&quot;https://garvi.gujarat.gov.in/badges/{badgeSlug}&quot; alt=&quot;GSIRF Verified Institution&quot; /&gt;<br />
                   &lt;/a&gt;
                 </code>
               </div>
@@ -527,7 +452,7 @@ export default function Dashboard() {
                     {t('dashboard.previewDataModal', 'GSIRF 2026 8-Section Data Collection Preview')}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    {lang === 'gu' ? 'ગુજરાત યુનિવર્સિટી (ID: GUJ-UNI-104) • મુદત: ૩૧ જુલાઈ ૨૦૨૬' : 'Gujarat University (ID: GUJ-UNI-104) • Deadline: 31 July 2026'}
+                    {activeInst.name} (ID: {activeInst.instId}) • Deadline: 31 July 2026
                   </p>
                 </div>
               </div>

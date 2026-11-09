@@ -1,25 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Share2, RotateCcw, Download, Menu, X, Smartphone, Monitor } from 'lucide-react';
-import MobileKpiCardView from '../components/MobileKpiCardView';
+import {
+  ArrowLeft,
+  Share2,
+  RotateCcw,
+  Download,
+  Menu,
+  X,
+  Sparkles,
+  BarChart3,
+  Layers
+} from 'lucide-react';
+import AnalyticsToolPdfRecreation from '../components/AnalyticsToolPdfRecreation';
 
 export default function Analytics() {
-  const [loading, setLoading] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [mobileView, setMobileView] = useState('kpi'); // 'kpi' or 'powerbi'
-
-  useEffect(() => {
-    // Reveal iframe after short delay if onLoad hasn't fired
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const [activeEngine, setActiveEngine] = useState('recharts'); // 'recharts' | 'powerbi'
 
   const handleExport = () => {
     setNotification({
       icon: '📊',
-      title: 'Preparing Report',
-      message: 'GSIRF Analytics report is being compiled for download...'
+      title: 'Preparing PDF Report',
+      message: 'Compiling GSIRF Analytics Tool report for download...'
     });
   };
 
@@ -28,25 +31,21 @@ export default function Analytics() {
     setNotification({
       icon: '🔗',
       title: 'Link Copied',
-      message: 'Analytics dashboard link has been copied to your clipboard!'
+      message: 'Direct link to this Analytics view has been copied to your clipboard!'
     });
   };
 
   const handleRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setNotification({
-        icon: '🔄',
-        title: 'Data Refreshed',
-        message: 'GSIRF Analytics database records have been refreshed successfully.'
-      });
-    }, 800);
+    setNotification({
+      icon: '🔄',
+      title: 'Data Synchronized',
+      message: 'All 469 institutional records refreshed directly from GSIRF 2024 Final Data.'
+    });
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
-      {/* Navigation */}
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+      {/* Top Navigation */}
       <nav className="glass fixed w-full top-0 z-50 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -56,9 +55,10 @@ export default function Analytics() {
               </Link>
               <span className="h-4 w-px bg-slate-300 mx-3 hidden sm:block" />
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:block">
-                Analytics Dashboard
+                GSIRF Analytics Tool
               </div>
             </div>
+
             <div className="hidden md:flex items-center space-x-3 text-xs font-bold">
               <Link
                 to="/dashboard"
@@ -73,6 +73,7 @@ export default function Analytics() {
                 Simulator
               </Link>
             </div>
+
             <button
               onClick={() => setNavOpen(!navOpen)}
               className="md:hidden inline-flex items-center justify-center p-2 rounded-xl text-slate-700 hover:bg-slate-100"
@@ -81,6 +82,7 @@ export default function Analytics() {
             </button>
           </div>
         </div>
+
         {navOpen && (
           <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2 text-sm font-semibold">
             <Link
@@ -108,191 +110,93 @@ export default function Analytics() {
         )}
       </nav>
 
-      {/* Hero / KPI Cards */}
-      <section className="pt-24 pb-8 bg-white border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-8">
-            <span className="text-xs font-bold uppercase tracking-widest text-garvi-orange bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60">
-              Statewide Analytics
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 space-y-6">
+        {/* Toggle Bar: Native Analytics Tool (PDF Layout) vs PowerBI Iframe */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-garvi-orange" />
+            <span className="text-xs font-bold text-slate-800">
+              Interactive Analytics Engine:
             </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mt-3 mb-3 tracking-tight">
-              Institutional Performance Analytics
-            </h1>
-            <p className="text-sm sm:text-base text-slate-600 mb-8 max-w-2xl mx-auto">
-              Real-time multi-dimensional analytics and benchmarking for Gujarat higher education institutions under GSIRF metrics.
-            </p>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              <div className="bg-slate-50/80 rounded-2xl p-5 border border-slate-200 text-left hover-lift flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 bg-amber-500/10 text-garvi-orange rounded-xl flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-1">Rank Tracking</h3>
-                  <p className="text-slate-500 text-xs">Categorical and overall state rankings</p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900">470</span>
-                  <span className="text-[11px] font-semibold text-slate-400">Total Institutes</span>
-                </div>
-              </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveEngine('recharts')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeEngine === 'recharts'
+                  ? 'bg-gradient-to-r from-garvi-orange to-garvi-gold text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Apache ECharts Tool (Matching PDF)</span>
+            </button>
 
-              <div className="bg-slate-50/80 rounded-2xl p-5 border border-slate-200 text-left hover-lift flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 bg-blue-500/10 text-blue-600 rounded-xl flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-1">Pillars Evaluation</h3>
-                  <p className="text-slate-500 text-xs">Deep evaluation across TLR, RPC, GO &amp; OI</p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900">4 Pillars</span>
-                  <span className="text-[11px] font-semibold text-slate-400">Core Metrics</span>
-                </div>
-              </div>
-
-              <div className="bg-slate-50/80 rounded-2xl p-5 border border-slate-200 text-left hover-lift flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 bg-emerald-500/10 text-emerald-600 rounded-xl flex items-center justify-center mb-3">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-1">Indicators Scope</h3>
-                  <p className="text-slate-500 text-xs">Holistic evaluation criteria breakdown</p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900">16 Indicators</span>
-                  <span className="text-[11px] font-semibold text-slate-400">Verified Data</span>
-                </div>
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => setActiveEngine('powerbi')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                activeEngine === 'powerbi'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>PowerBI Desktop Embed</span>
+            </button>
           </div>
         </div>
-      </section>
 
-      {/* Main Dashboard Section */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl shadow-sm p-4 sm:p-6 md:p-8 border border-slate-200">
-            {/* Header with Title and Live status */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  GSIRF Analytics Dashboard
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                  Interactive state intelligence view powered by Government of Gujarat rating records
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center text-xs font-bold text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
-                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full mr-2 animate-pulse" />
-                  Live Sync
-                </div>
-              </div>
+        {/* View 1: Recharts Native PDF Reproduction with Live Excel Data */}
+        {activeEngine === 'recharts' ? (
+          <AnalyticsToolPdfRecreation />
+        ) : (
+          /* View 2: Desktop PowerBI Embed */
+          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h2 className="text-base font-bold text-slate-900">
+                PowerBI Statewide Interactive Analytics Embed
+              </h2>
             </div>
-
-            {/* Mobile View Toggle Switch (Phone screens only) */}
-            <div className="md:hidden flex items-center justify-between mb-5 p-1.5 bg-slate-100 rounded-2xl">
-              <button
-                onClick={() => setMobileView('kpi')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-                  mobileView === 'kpi'
-                    ? 'bg-white text-garvi-orange shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>Mobile KPI Cards</span>
-              </button>
-              <button
-                onClick={() => setMobileView('powerbi')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-                  mobileView === 'powerbi'
-                    ? 'bg-white text-garvi-orange shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Monitor className="w-3.5 h-3.5" />
-                <span>Desktop PowerBI</span>
-              </button>
-            </div>
-
-            {/* Dedicated Mobile KPI Card View (Default on Phones) */}
-            <div className={mobileView === 'kpi' ? 'block md:hidden' : 'hidden'}>
-              <MobileKpiCardView
-                title="GSIRF Analytics — Instant KPI View"
-                onSwitchToDesktop={() => setMobileView('powerbi')}
+            <div className="w-full overflow-hidden rounded-2xl border border-slate-200">
+              <iframe
+                title="GARVI ANALYTICS DASHBOARD"
+                src="https://app.powerbi.com/view?r=eyJrIjoiNjZlZmViYjItYTIyMi00YWRjLTkyZDctNDM3MzJkM2RkOTY5IiwidCI6ImU5YjVlZTQxLTRkODUtNDBhZi04YWRhLWQ2MTBiNzU3NTk5YSJ9"
+                className="w-full h-[600px] md:h-[850px] border-0"
+                allowFullScreen={true}
               />
             </div>
-
-            {/* Desktop / Full PowerBI Container */}
-            <div className={mobileView === 'powerbi' ? 'block' : 'hidden md:block'}>
-              {mobileView === 'powerbi' && (
-                <div className="md:hidden mb-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center justify-between">
-                  <span>Viewing full desktop report. Pan and pinch to zoom as needed.</span>
-                  <button
-                    onClick={() => setMobileView('kpi')}
-                    className="font-bold underline ml-2 flex-shrink-0"
-                  >
-                    Back to KPI View
-                  </button>
-                </div>
-              )}
-
-              {loading && (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <div className="loading-spinner mb-4" />
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Loading GSIRF Analytics Engine...
-                  </p>
-                </div>
-              )}
-
-              <div className={`w-full overflow-hidden rounded-2xl border border-slate-200 ${loading ? 'hidden' : 'block'}`}>
-                <iframe
-                  title="ANALYTICS TOOL"
-                  src="https://app.powerbi.com/view?r=eyJrIjoiNzJhNWE0ZWQtZWZlZi00ZGUyLWFhYjQtZmEwMDUxODVlOWI0IiwidCI6ImU5YjVlZTQxLTRkODUtNDBhZi04YWRhLWQ2MTBiNzU3NTk5YSJ9"
-                  className="w-full h-[600px] md:h-[900px] border-0"
-                  allowFullScreen={true}
-                  onLoad={() => setLoading(false)}
-                />
-              </div>
-            </div>
-
-            {/* Action Bar */}
-            <div className="mt-6 pt-6 border-t border-slate-100 flex flex-wrap gap-3 justify-center">
-              <button
-                onClick={handleExport}
-                className="btn-garvi text-xs py-2 px-4 shadow-xs"
-              >
-                <Download className="w-3.5 h-3.5 mr-1.5" />
-                Export Analytics Report
-              </button>
-              <button
-                onClick={handleShare}
-                className="flex items-center bg-slate-100 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 transition text-xs font-bold"
-              >
-                <Share2 className="w-3.5 h-3.5 mr-1.5" />
-                Share Dashboard
-              </button>
-              <button
-                onClick={handleRefresh}
-                className="flex items-center bg-slate-100 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 transition text-xs font-bold"
-              >
-                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
-                Refresh Data
-              </button>
-            </div>
           </div>
+        )}
+
+        {/* Action Controls Footer */}
+        <div className="pt-4 flex flex-wrap gap-3 justify-center">
+          <button
+            onClick={handleExport}
+            className="btn-garvi text-xs py-2.5 px-4 shadow-xs"
+          >
+            <Download className="w-3.5 h-3.5 mr-1.5" />
+            Export Analytics Tool PDF
+          </button>
+          <button
+            onClick={handleShare}
+            className="flex items-center bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl hover:bg-slate-50 transition text-xs font-bold shadow-2xs"
+          >
+            <Share2 className="w-3.5 h-3.5 mr-1.5" />
+            Share Dashboard
+          </button>
+          <button
+            onClick={handleRefresh}
+            className="flex items-center bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl hover:bg-slate-50 transition text-xs font-bold shadow-2xs"
+          >
+            <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
+            Refresh Excel Records
+          </button>
         </div>
-      </section>
+      </main>
 
       {/* Notification Toast Modal */}
       {notification && (
