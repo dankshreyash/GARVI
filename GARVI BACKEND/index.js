@@ -78,7 +78,7 @@ app.post('/api/auth/login', async (req, res) => {
           if (passwordMatches) {
             const inst = cred.institutions;
             const token = jwt.sign(
-              { id: cred.id, username: cred.username, role: cred.role, instId: inst.uid },
+              { id: cred.id, username: cred.username, role: cred.role || 'college', instId: inst ? inst.uid : 'admin' },
               JWT_SECRET,
               { expiresIn: '7d' }
             );
@@ -88,7 +88,8 @@ app.post('/api/auth/login', async (req, res) => {
             return res.json({
               message: 'Authentication successful',
               token,
-              institution: {
+              role: cred.role || 'college',
+              institution: inst ? {
                 uid: inst.uid,
                 name: inst.name,
                 nameGu: inst.name_gu,
@@ -102,7 +103,18 @@ app.post('/api/auth/login', async (req, res) => {
                 subParameters: inst.sub_parameters,
                 historicalTrends: inst.historical_trends,
                 strengths: inst.strengths,
-                growthAreas: inst.growth_areas
+                growthAreas: inst.growth_areas,
+                role: cred.role || 'college'
+              } : {
+                uid: 'admin',
+                name: 'State Academic Rating Authority (Admin)',
+                nameGu: 'રાજ્ય એકેડેમિક રેટિંગ સત્તામંડળ (એડમિન)',
+                role: 'admin',
+                category: 'State Administration',
+                star: 5,
+                rank: 1,
+                totalScore: 100,
+                cgpa: 5.0
               }
             });
           }
@@ -164,7 +176,56 @@ app.post('/api/auth/login', async (req, res) => {
       }
     }
 
-    // 3. Fallback: Authenticate against in-memory dataset with bcrypt verification
+    // 3. Admin direct verification fallback
+    if (cleanUsername === 'admin' && (cleanPassword === 'Admin@GARVI2026' || cleanPassword === 'Icare@2026')) {
+      const token = jwt.sign(
+        { username: 'admin', role: 'admin', instId: 'admin' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      return res.json({
+        message: 'Authentication successful',
+        token,
+        role: 'admin',
+        institution: {
+          uid: 'admin',
+          name: 'State Academic Rating Authority (Admin)',
+          nameGu: 'રાજ્ય એકેડેમિક રેટિંગ સત્તામંડળ (એડમિન)',
+          role: 'admin',
+          category: 'State Administration',
+          star: 5,
+          rank: 1,
+          totalScore: 100,
+          cgpa: 5.0
+        }
+      });
+    }
+
+    if (cleanUsername === 'garvisupport@gmail.com' && cleanPassword === 'Icare@2026') {
+      const token = jwt.sign(
+        { username: 'garvisupport@gmail.com', role: 'admin', instId: 'admin' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      return res.json({
+        message: 'Authentication successful',
+        token,
+        role: 'admin',
+        institution: {
+          uid: 'admin',
+          name: 'State Academic Rating Authority (Admin)',
+          nameGu: 'રાજ્ય એકેડેમિક રેટિંગ સત્તામંડળ (એડમિન)',
+          role: 'admin',
+          category: 'State Administration',
+          star: 5,
+          rank: 1,
+          totalScore: 100,
+          cgpa: 5.0
+        }
+      });
+    }
+
+    // 4. Fallback: Authenticate against in-memory dataset with bcrypt verification
     const inst = inMemoryInstitutions.find((i) => i.uid.toLowerCase() === cleanUsername);
     if (inst) {
       const passwordMatches = await verifyPassword(cleanPassword, inst);
