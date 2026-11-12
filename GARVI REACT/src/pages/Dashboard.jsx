@@ -31,7 +31,7 @@ export default function Dashboard() {
   const [copiedCode, setCopiedCode] = useState(false);
 
   // Active authenticated institution or default to Anand Law College
-  const [activeInst, setActiveInst] = useState(() => {
+  const [activeInst] = useState(() => {
     try {
       const stored = localStorage.getItem('garvi_active_institution');
       if (stored) return JSON.parse(stored);
@@ -78,14 +78,6 @@ export default function Dashboard() {
     }
   };
 
-  const switchDemoInstitution = (uid) => {
-    const found = INSTITUTIONS_REGISTRY.find((i) => i.uid === uid);
-    if (found) {
-      setActiveInst(found);
-      localStorage.setItem('garvi_active_institution', JSON.stringify(found));
-    }
-  };
-
   const badgeSlug = activeInst.star >= 5 ? 'gsirf-5star-badge.svg' : 'gsirf-4star-badge.svg';
 
   return (
@@ -115,24 +107,6 @@ export default function Dashboard() {
             </div>
 
             <div className="flex items-center gap-2.5">
-              {/* Institution Quick Switcher for Testing */}
-              <div className="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold border border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => switchDemoInstitution('anand_law')}
-                  className={`px-2.5 py-1 rounded-lg transition ${activeInst.uid === 'anand_law' ? 'bg-white text-garvi-orange shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`}
-                >
-                  Anand Law
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchDemoInstitution('ahmedabad_uni')}
-                  className={`px-2.5 py-1 rounded-lg transition ${activeInst.uid === 'ahmedabad_uni' ? 'bg-white text-blue-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'}`}
-                >
-                  Ahmedabad Uni
-                </button>
-              </div>
-
               {/* Language Switcher Pill */}
               <button
                 onClick={toggleLanguage}
