@@ -8,15 +8,13 @@ import {
   Menu,
   X,
   Sparkles,
-  BarChart3,
-  Layers
+  BarChart3
 } from 'lucide-react';
 import AnalyticsToolPdfRecreation from '../components/AnalyticsToolPdfRecreation';
 
 export default function Analytics() {
   const [navOpen, setNavOpen] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [activeEngine, setActiveEngine] = useState('recharts'); // 'recharts' | 'powerbi'
 
   const handleExport = () => {
     setNotification({
@@ -112,7 +110,7 @@ export default function Analytics() {
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 space-y-6">
-        {/* Toggle Bar: Native Analytics Tool (PDF Layout) vs PowerBI Iframe */}
+        {/* Native Analytics Engine Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-garvi-orange" />
@@ -122,55 +120,15 @@ export default function Analytics() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveEngine('recharts')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                activeEngine === 'recharts'
-                  ? 'bg-gradient-to-r from-garvi-orange to-garvi-gold text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
+            <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-garvi-orange to-garvi-gold text-white shadow-xs flex items-center gap-1.5">
               <BarChart3 className="w-3.5 h-3.5" />
               <span>Apache ECharts Tool (Matching PDF)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveEngine('powerbi')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                activeEngine === 'powerbi'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>PowerBI Desktop Embed</span>
-            </button>
+            </span>
           </div>
         </div>
 
-        {/* View 1: Recharts Native PDF Reproduction with Live Excel Data */}
-        {activeEngine === 'recharts' ? (
-          <AnalyticsToolPdfRecreation />
-        ) : (
-          /* View 2: Desktop PowerBI Embed */
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h2 className="text-base font-bold text-slate-900">
-                PowerBI Statewide Interactive Analytics Embed
-              </h2>
-            </div>
-            <div className="w-full overflow-hidden rounded-2xl border border-slate-200">
-              <iframe
-                title="GARVI ANALYTICS DASHBOARD"
-                src="https://app.powerbi.com/view?r=eyJrIjoiNjZlZmViYjItYTIyMi00YWRjLTkyZDctNDM3MzJkM2RkOTY5IiwidCI6ImU5YjVlZTQxLTRkODUtNDBhZi04YWRhLWQ2MTBiNzU3NTk5YSJ9"
-                className="w-full h-[600px] md:h-[850px] border-0"
-                allowFullScreen={true}
-              />
-            </div>
-          </div>
-        )}
+        {/* Native PDF Reproduction with Live Excel Data */}
+        <AnalyticsToolPdfRecreation />
 
         {/* Action Controls Footer */}
         <div className="pt-4 flex flex-wrap gap-3 justify-center">
