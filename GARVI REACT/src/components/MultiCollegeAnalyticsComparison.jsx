@@ -31,10 +31,48 @@ const PALETTE = [
   { stroke: '#059669', fill: '#10b981', name: 'Institution 3' }
 ];
 
+function getInitialBenchmarkingState() {
+  try {
+    const raw = localStorage.getItem('garvi_active_institution');
+    if (raw) {
+      const stored = JSON.parse(raw);
+      if (stored && stored.name) {
+        const match = fullData.find(
+          (c) => c.name.toUpperCase() === stored.name.toUpperCase()
+        );
+        if (match) {
+          const category = match.category || 'Engineering';
+          const peers = fullData
+            .filter(
+              (c) =>
+                c.category &&
+                c.category.toLowerCase() === category.toLowerCase() &&
+                c.name.toUpperCase() !== match.name.toUpperCase()
+            )
+            .slice(0, 2)
+            .map((c) => c.name);
+          return { category, names: [match.name, ...peers] };
+        }
+      }
+    }
+  } catch {
+    // ignore invalid storage
+  }
+  return {
+    category: 'Engineering',
+    names: [
+      'BIRLA VISHVAKARMA MAHAVIDYALAYA',
+      'GOVERNMENT ENGINEERING COLLEGE, GANDHINAGAR',
+      'INSTITUTE OF TECHNOLOGY, NIRMA UNIVERSITY'
+    ]
+  };
+}
+
 export default function MultiCollegeAnalyticsComparison() {
+  const [initialState] = useState(getInitialBenchmarkingState);
   // Slicers matching PDF header
   const [selectedYear, setSelectedYear] = useState('2024');
-  const [selectedCategory, setSelectedCategory] = useState('Engineering');
+  const [selectedCategory, setSelectedCategory] = useState(initialState.category);
 
   // Filter colleges by selected category
   const categoryColleges = useMemo(() => {
@@ -45,11 +83,7 @@ export default function MultiCollegeAnalyticsComparison() {
   }, [selectedCategory]);
 
   // Selected colleges (up to 3)
-  const [selectedCollegeNames, setSelectedCollegeNames] = useState([
-    'BIRLA VISHVAKARMA MAHAVIDYALAYA',
-    'GOVERNMENT ENGINEERING COLLEGE, GANDHINAGAR',
-    'INSTITUTE OF TECHNOLOGY, NIRMA UNIVERSITY'
-  ]);
+  const [selectedCollegeNames, setSelectedCollegeNames] = useState(initialState.names);
 
   // Current colleges objects
   const selectedColleges = useMemo(() => {

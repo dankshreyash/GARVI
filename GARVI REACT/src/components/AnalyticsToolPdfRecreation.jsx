@@ -24,11 +24,30 @@ const INDICATOR_LIST = [
   { key: 'PCS', label: 'PCS (Physically Challenged)', max: 20 }
 ];
 
+function getInitialAnalyticsInstitution() {
+  try {
+    const raw = localStorage.getItem('garvi_active_institution');
+    if (raw) {
+      const stored = JSON.parse(raw);
+      if (stored && stored.name) {
+        const match = fullData.find(
+          (c) => c.name.toUpperCase() === stored.name.toUpperCase()
+        );
+        if (match) return { category: match.category || 'Engineering', name: match.name };
+      }
+    }
+  } catch {
+    // ignore invalid storage
+  }
+  return { category: 'Engineering', name: 'BIRLA VISHVAKARMA MAHAVIDYALAYA' };
+}
+
 export default function AnalyticsToolPdfRecreation() {
+  const [initialInst] = useState(getInitialAnalyticsInstitution);
   // Slicers State
   const [selectedYear, setSelectedYear] = useState('2024');
-  const [selectedCategory, setSelectedCategory] = useState('Engineering');
-  const [selectedInstName, setSelectedInstName] = useState('BIRLA VISHVAKARMA MAHAVIDYALAYA');
+  const [selectedCategory, setSelectedCategory] = useState(initialInst.category);
+  const [selectedInstName, setSelectedInstName] = useState(initialInst.name);
 
   // Filter colleges by selected category
   const categoryColleges = useMemo(() => {
