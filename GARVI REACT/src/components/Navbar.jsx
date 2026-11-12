@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, BarChart3, PieChart, Activity, Users, LogIn, Sparkles, Globe } from 'lucide-react';
+import { Menu, X, Home, Users, LogIn, Sparkles, Globe } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar() {
@@ -10,9 +10,6 @@ export default function Navbar() {
 
   const navLinks = [
     { path: '/', label: t('nav.home', 'Home'), icon: Home },
-    { path: '/analytics', label: t('nav.analytics', 'Analytics'), icon: BarChart3 },
-    { path: '/benchmarking', label: t('nav.benchmarking', 'Benchmarking'), icon: PieChart },
-    { path: '/simulator', label: t('nav.simulator', 'Simulator'), icon: Activity },
   ];
 
   const isActive = (path) => location.pathname === path;
