@@ -31,7 +31,7 @@ export default function Login() {
 
     try {
       // 1. Primary path: Authenticate against PostgreSQL Supabase Backend API
-      const inst = await loginInstitution(email, password);
+      const inst = await loginInstitution(email.trim(), password.trim());
 
       // Save sanitized institution object in localStorage (NO PASSWORDS!)
       localStorage.setItem('garvi_active_institution', JSON.stringify(inst));
@@ -195,7 +195,7 @@ export default function Login() {
               disabled={loading}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-garvi-orange to-garvi-gold text-white font-bold text-sm shadow-sm hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer disabled:opacity-50"
             >
-              {loading ? 'Verifying with PostgreSQL Backend...' : 'Sign In & Open Institutional Analytics'}
+              {loading ? 'Verifying with  Backend...' : 'Sign In & Open Institutional Analytics'}
             </button>
           </form>
 
