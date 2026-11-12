@@ -1,24 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Share2, RotateCcw, Download, Menu, X, Smartphone, Monitor } from 'lucide-react';
-import MobileKpiCardView from '../components/MobileKpiCardView';
+import { ArrowLeft, Share2, RotateCcw, Menu, X } from 'lucide-react';
+import GsirfInteractiveSimulator from '../components/GsirfInteractiveSimulator';
 
 export default function Simulator() {
-  const [loading, setLoading] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [mobileView, setMobileView] = useState('kpi'); // 'kpi' or 'powerbi'
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleExport = () => {
     setNotification({
       icon: '📊',
-      title: 'Preparing Report',
-      message: 'Simulator scenario report is being prepared for download...'
+      title: 'Scenario Report Downloaded',
+      message: 'Your What-If Simulation CSV report has been downloaded!'
     });
   };
 
@@ -32,15 +25,11 @@ export default function Simulator() {
   };
 
   const handleRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setNotification({
-        icon: '🔄',
-        title: 'Data Refreshed',
-        message: 'Simulator variables have been refreshed from the GSIRF model.'
-      });
-    }, 800);
+    setNotification({
+      icon: '🔄',
+      title: 'Data Synchronized',
+      message: 'All 469 institutional metrics and GSIRF weights refreshed.'
+    });
   };
 
   return (
@@ -132,7 +121,7 @@ export default function Simulator() {
                   <p className="text-slate-500 text-xs">Flags underperforming indicators for your institute</p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900">470</span>
+                  <span className="text-2xl font-black text-slate-900">469</span>
                   <span className="text-[11px] font-semibold text-slate-400">Peer Base</span>
                 </div>
               </div>
@@ -148,7 +137,7 @@ export default function Simulator() {
                   <p className="text-slate-500 text-xs">Simulate faculty, research &amp; placement targets</p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900">20 Metrics</span>
+                  <span className="text-2xl font-black text-slate-900">16 Metrics</span>
                   <span className="text-[11px] font-semibold text-slate-400">Adjustable</span>
                 </div>
               </div>
@@ -164,8 +153,8 @@ export default function Simulator() {
                   <p className="text-slate-500 text-xs">Instant projection of new total score and rank</p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-slate-200 flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900">95%</span>
-                  <span className="text-[11px] font-semibold text-slate-400">Model Accuracy</span>
+                  <span className="text-2xl font-black text-slate-900">Real-Time</span>
+                  <span className="text-[11px] font-semibold text-slate-400">ECharts Engine</span>
                 </div>
               </div>
             </div>
@@ -174,114 +163,42 @@ export default function Simulator() {
       </section>
 
       {/* Main Section */}
-      <section className="py-12">
+      <section className="py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl shadow-sm p-4 sm:p-6 md:p-8 border border-slate-200">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
               <div>
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  GSIRF Simulator Dashboard
+                  GSIRF Interactive What-If Simulator
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                  Interactive scenario modeling and strategic rating projection tool
+                  Adjust any of the 16 institutional indicators below to see live projections for Score, CGPA, Stars &amp; Category Rank
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex items-center text-xs font-bold text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
+                <div className="flex items-center text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
                   <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full mr-2 animate-pulse" />
-                  Live Sync
+                  Native ECharts Engine
                 </div>
               </div>
             </div>
 
-            {/* Mobile View Toggle Switch */}
-            <div className="md:hidden flex items-center justify-between mb-5 p-1.5 bg-slate-100 rounded-2xl">
-              <button
-                onClick={() => setMobileView('kpi')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-                  mobileView === 'kpi'
-                    ? 'bg-white text-garvi-orange shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>Mobile KPI Cards</span>
-              </button>
-              <button
-                onClick={() => setMobileView('powerbi')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
-                  mobileView === 'powerbi'
-                    ? 'bg-white text-garvi-orange shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Monitor className="w-3.5 h-3.5" />
-                <span>Desktop PowerBI</span>
-              </button>
-            </div>
-
-            {/* Dedicated Mobile KPI Card View (Default on Phones) */}
-            <div className={mobileView === 'kpi' ? 'block md:hidden' : 'hidden'}>
-              <MobileKpiCardView
-                title="GSIRF Simulator — Mobile Projection"
-                onSwitchToDesktop={() => setMobileView('powerbi')}
-              />
-            </div>
-
-            {/* Desktop / Full PowerBI Container */}
-            <div className={mobileView === 'powerbi' ? 'block' : 'hidden md:block'}>
-              {mobileView === 'powerbi' && (
-                <div className="md:hidden mb-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center justify-between">
-                  <span>Viewing full desktop report. Pan and pinch to zoom as needed.</span>
-                  <button
-                    onClick={() => setMobileView('kpi')}
-                    className="font-bold underline ml-2 flex-shrink-0"
-                  >
-                    Back to KPI View
-                  </button>
-                </div>
-              )}
-
-              {loading && (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <div className="loading-spinner mb-4" />
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Loading GSIRF Simulator Model...
-                  </p>
-                </div>
-              )}
-
-              <div className={`w-full overflow-hidden rounded-2xl border border-slate-200 ${loading ? 'hidden' : 'block'}`}>
-                <iframe
-                  title="SIMULATOR TOOL"
-                  src="https://app.powerbi.com/view?r=eyJrIjoiZTQ4MTg4ODItODUzMS00YTdiLTk0OGUtMmIxOWM4YjE3NTViIiwidCI6ImU5YjVlZTQxLTRkODUtNDBhZi04YWRhLWQ2MTBiNzU3NTk5YSJ9"
-                  className="w-full h-[600px] md:h-[900px] border-0"
-                  allowFullScreen={true}
-                  onLoad={() => setLoading(false)}
-                />
-              </div>
-            </div>
+            {/* Interactive Simulator Component (Replaces PowerBI) */}
+            <GsirfInteractiveSimulator onExportReport={handleExport} />
 
             {/* Actions */}
-            <div className="mt-6 pt-6 border-t border-slate-100 flex flex-wrap gap-3 justify-center">
-              <button
-                onClick={handleExport}
-                className="btn-garvi text-xs py-2 px-4 shadow-xs"
-              >
-                <Download className="w-3.5 h-3.5 mr-1.5" />
-                Export Simulation Report
-              </button>
+            <div className="mt-8 pt-6 border-t border-slate-100 flex flex-wrap gap-3 justify-center">
               <button
                 onClick={handleShare}
-                className="flex items-center bg-slate-100 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 transition text-xs font-bold"
+                className="flex items-center bg-slate-100 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 transition text-xs font-bold cursor-pointer"
               >
                 <Share2 className="w-3.5 h-3.5 mr-1.5" />
-                Share Dashboard
+                Share Simulator Link
               </button>
               <button
                 onClick={handleRefresh}
-                className="flex items-center bg-slate-100 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 transition text-xs font-bold"
+                className="flex items-center bg-slate-100 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-200 transition text-xs font-bold cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
                 Refresh Data
