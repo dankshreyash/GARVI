@@ -1,18 +1,11 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Users, LogIn, Sparkles, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Menu, X, Users, LogIn, Sparkles, Globe } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
   const { lang, toggleLanguage, t } = useLanguage();
-
-  const navLinks = [
-    { path: '/', label: t('nav.home', 'Home'), icon: Home },
-  ];
-
-  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="glass fixed w-full top-0 z-50 border-b border-gray-200/70 transition-all duration-200">
@@ -46,28 +39,8 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links & Controls */}
+          {/* Desktop Navigation Controls */}
           <div className="hidden md:flex items-center space-x-1.5 text-sm">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const active = isActive(link.path);
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                    active
-                      ? 'bg-gradient-to-r from-garvi-orange/15 to-garvi-gold/15 text-garvi-orange shadow-xs'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${active ? 'text-garvi-orange' : 'text-gray-500'}`} />
-                  {link.label}
-                </Link>
-              );
-            })}
-
-            <div className="h-5 w-px bg-gray-200 mx-1.5" />
 
             {/* Language Switcher Pill */}
             <button
@@ -127,26 +100,7 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {isOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white/98 backdrop-blur-md px-4 pt-3 pb-5 space-y-1.5 shadow-xl animate-in slide-in-from-top-2 duration-200">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            const active = isActive(link.path);
-            return (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-base font-semibold transition-colors ${
-                  active
-                    ? 'bg-garvi-orange/10 text-garvi-orange'
-                    : 'text-gray-700 hover:text-garvi-orange hover:bg-gray-50'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                {link.label}
-              </Link>
-            );
-          })}
-          <div className="pt-2 border-t border-gray-100 space-y-2">
+          <div className="space-y-2">
             <Link
               to="/login"
               onClick={() => setIsOpen(false)}
