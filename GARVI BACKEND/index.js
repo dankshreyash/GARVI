@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const sanitizeHtml = require('sanitize-html');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -15,9 +18,82 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'garvi_secure_fallback_secret_2026';
 
-// Middleware
-app.use(cors({ origin: '*' }));
-app.use(express.json());
+// 1. HTTP Security Headers with Helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // CSP is actively enforced on Vercel frontend edge
+    crossOriginEmbedderPolicy: false
+  })
+);
+
+// 2. Strict Transport Security (HSTS) & HTTPS Force Redirect Middleware
+app.use((req, res, next) => {
+  res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+
+  // Forwarded protocol check (for Render / Reverse Proxies)
+  if (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(301, `https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
+// 3. CORS Configuration
+const ALLOWED_ORIGINS = [
+  'https://garvi-inky.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or ping monitors)
+      if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Fallback allow with CORS headers
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  })
+);
+
+// 4. Request Body Parser with payload size restriction (prevents DoS)
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// 5. Rate Limiting Protection (Brute Force / DoS Prevention)
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 300, // Limit each IP to 300 requests per window
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests from this IP, please try again after 15 minutes' }
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Max 20 login attempts per 15 min per IP to prevent brute force
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many failed login attempts. Account temporarily throttled for security.' }
+});
+
+app.use('/api/', apiLimiter);
+
+// 6. Sanitization Helper to prevent Stored & Reflected XSS
+function sanitizeInput(val) {
+  if (typeof val === 'string') {
+    return sanitizeHtml(val.trim(), {
+      allowedTags: [],
+      allowedAttributes: {}
+    });
+  }
+  return val;
+}
 
 // In-memory audit logs store for backend monitoring
 const serverAuditLogs = [];
@@ -105,7 +181,7 @@ app.get('/api/health', (req, res) => {
  * Returns JWT token and sanitized institution data.
  * NEVER returns password or password_hash to the client!
  */
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -113,7 +189,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const cleanUsername = String(username).trim().toLowerCase();
+    const cleanUsername = sanitizeInput(String(username)).toLowerCase();
     const cleanPassword = String(password).trim();
 
     if (cleanUsername.length < 2 || cleanUsername.length > 100) {

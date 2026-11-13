@@ -33,5 +33,8 @@ Thumbs.db
 # Temporary / agent files
 .opencode
 
+# Local backups
+backups/
+
 # Credentials export (keep local)
 GARVI_Institutions_Credentials.xlsx

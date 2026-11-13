@@ -177,3 +177,4 @@ export function clearAuditLogs() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(AUDIT_STORAGE_KEY);
 }
+
