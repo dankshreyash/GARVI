@@ -29,6 +29,7 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import { INSTITUTIONS_FROM_EXCEL } from '../data/institutionsRegistry';
 import { loginInstitution } from '../api/garviApi';
+import { getAuditLogs, recordAuditLog } from '../services/monitoring';
 import Seo from '../components/Seo';
 
 export default function Admin() {
@@ -125,11 +126,14 @@ export default function Admin() {
       if (result.role === 'admin' || localStorage.getItem('garvi_user_role') === 'admin') {
         localStorage.setItem('garvi_user_role', 'admin');
         setIsAdminAuthed(true);
+        recordAuditLog('ADMIN_LOGIN_SUCCESS', { username: adminUser.trim() });
       } else {
         setAdminError('Access Denied: This account does not have State Administrator privileges.');
+        recordAuditLog('ADMIN_LOGIN_DENIED', { username: adminUser.trim() });
       }
     } catch (err) {
       setAdminError(err.message || 'Invalid administrator username or password.');
+      recordAuditLog('ADMIN_LOGIN_FAILED', { username: adminUser.trim(), error: err.message });
     } finally {
       setAdminLoading(false);
     }
@@ -140,6 +144,7 @@ export default function Admin() {
     localStorage.removeItem('garvi_auth_token');
     setIsAdminAuthed(false);
     setAdminPass('');
+    recordAuditLog('ADMIN_LOGOUT', { user: 'admin' });
   };
 
   const handleSubmit = (e) => {
@@ -656,6 +661,18 @@ export default function Admin() {
             <FileCheck2 className="w-4 h-4 text-emerald-500" />
             <span>GSIRF Submissions Scrutiny ({submissions.length})</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('audit')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'audit'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Clock className="w-4 h-4 text-amber-500" />
+            <span>Audit Trail &amp; Logs</span>
+          </button>
         </div>
 
         {activeTab === 'credentials' && (
@@ -917,6 +934,76 @@ export default function Admin() {
                       </tr>
                     );
                   })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {/* ================================================================= */}
+        {/* TAB 3: AUDIT TRAIL LOGS (Who did what, when)                      */}
+        {/* ================================================================= */}
+        {activeTab === 'audit' && (
+          <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-2xs space-y-4 fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">
+                  Institutional Audit Trail &amp; Activity Log
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Chronological security audit of authentications, data edits, and rating calculations (who did what, when)
+                </p>
+              </div>
+              <span className="text-xs font-mono px-3 py-1 bg-slate-100 text-slate-700 rounded-lg font-bold">
+                {getAuditLogs().length} Events Recorded
+              </span>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-slate-200">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="py-3 px-4">Timestamp (When)</th>
+                    <th className="py-3 px-4">User / UID (Who)</th>
+                    <th className="py-3 px-4">Institution</th>
+                    <th className="py-3 px-4">Action (What)</th>
+                    <th className="py-3 px-4">Details</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-mono">
+                  {getAuditLogs().length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-400 font-sans text-xs">
+                        No audit events recorded yet in this session.
+                      </td>
+                    </tr>
+                  ) : (
+                    getAuditLogs().map((log) => (
+                      <tr key={log.id} className="hover:bg-slate-50 transition">
+                        <td className="py-3 px-4 text-slate-500 text-[11px] whitespace-nowrap">
+                          {new Date(log.timestamp).toLocaleString()}
+                        </td>
+                        <td className="py-3 px-4 font-bold text-slate-800">{log.user}</td>
+                        <td className="py-3 px-4 text-slate-600 font-sans">{log.institution || '—'}</td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`px-2 py-0.5 rounded-md font-bold text-[10px] ${
+                              log.action.includes('SUCCESS')
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : log.action.includes('FAILED') || log.action.includes('ERROR')
+                                ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                                : 'bg-blue-50 text-blue-700 border border-blue-200'
+                            }`}
+                          >
+                            {log.action}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-slate-500 font-sans text-[11px] truncate max-w-xs">
+                          {JSON.stringify(log.details)}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

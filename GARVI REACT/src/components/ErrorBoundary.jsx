@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { AlertTriangle, RotateCcw, Home } from 'lucide-react';
+import { captureError } from '../services/monitoring';
 
 /**
  * Universal React Error Boundary
@@ -18,6 +19,7 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('GARVI UI Error Caught by ErrorBoundary:', error, errorInfo);
+    captureError(error, { componentStack: errorInfo?.componentStack });
   }
 
   handleReload = () => {
@@ -74,3 +76,4 @@ export default class ErrorBoundary extends Component {
     return this.props.children;
   }
 }
+

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Phone, ArrowLeft, Globe, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { loginInstitution } from '../api/garviApi';
+import { recordAuditLog, trackEvent } from '../services/monitoring';
 import Seo from '../components/Seo';
 
 export default function Login() {
@@ -37,6 +38,15 @@ export default function Login() {
       // Save sanitized institution object in localStorage (NO PASSWORDS!)
       localStorage.setItem('garvi_active_institution', JSON.stringify(inst));
       
+      // Audit trail & analytics tracking
+      recordAuditLog('INSTITUTION_LOGIN_SUCCESS', {
+        uid: inst.uid,
+        name: inst.name,
+        category: inst.category,
+        role: inst.role
+      });
+      trackEvent('login', 'Authentication', inst.name || inst.uid);
+
       if (inst.role === 'admin') {
         setMsg({
           type: 'success',
@@ -56,6 +66,10 @@ export default function Login() {
       }
     } catch (apiErr) {
       console.warn('Backend login attempt error:', apiErr.message);
+      recordAuditLog('INSTITUTION_LOGIN_FAILED', {
+        attemptedUser: email.trim(),
+        error: apiErr.message
+      });
       setMsg({
         type: 'error',
         text: apiErr.message || (lang === 'gu'

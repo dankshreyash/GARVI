@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { trackPageView } from '../services/monitoring';
 
 const BASE_URL = 'https://garvi-inky.vercel.app';
 const DEFAULT_IMAGE = `${BASE_URL}/kcg_gujarat_transparent.png`;
@@ -92,7 +93,10 @@ export default function Seo({
     // 5. Canonical Link
     upsertCanonical(currentCanonical);
 
-    // 6. JSON-LD Schemas
+    // 6. Google Analytics Virtual Page View tracking
+    trackPageView(location.pathname, fullTitle);
+
+    // 7. JSON-LD Schemas
     if (Array.isArray(schemas) && schemas.length > 0) {
       schemas.forEach((schema, idx) => {
         upsertStructuredData(`schema-jsonld-${idx}`, schema);
@@ -108,7 +112,7 @@ export default function Seo({
         });
       }
     };
-  }, [title, description, keywords, currentCanonical, ogType, ogImage, noindex, schemas]);
+  }, [title, description, keywords, currentCanonical, ogType, ogImage, noindex, schemas, location.pathname]);
 
   return null;
 }

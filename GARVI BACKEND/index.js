@@ -19,29 +19,82 @@ const JWT_SECRET = process.env.JWT_SECRET || 'garvi_secure_fallback_secret_2026'
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Request logger
+// In-memory audit logs store for backend monitoring
+const serverAuditLogs = [];
+const MAX_SERVER_LOGS = 500;
+
+// Request logger & audit recorder
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const logItem = {
+      id: `srv_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: new Date().toISOString(),
+      method: req.method,
+      url: req.originalUrl || req.url,
+      statusCode: res.statusCode,
+      durationMs: duration,
+      ip: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    };
+    serverAuditLogs.unshift(logItem);
+    if (serverAuditLogs.length > MAX_SERVER_LOGS) serverAuditLogs.pop();
+    console.log(`[${logItem.timestamp}] ${logItem.method} ${logItem.url} ${logItem.statusCode} (${duration}ms)`);
+  });
   next();
 });
 
-// Root ping endpoint for cron/uptime monitors
+// Ingest client audit log events (Who did what, when)
+app.post('/api/logs', (req, res) => {
+  try {
+    const entry = req.body;
+    if (entry && entry.action) {
+      serverAuditLogs.unshift({
+        ...entry,
+        ingestedAt: new Date().toISOString(),
+        source: 'client'
+      });
+      if (serverAuditLogs.length > MAX_SERVER_LOGS) serverAuditLogs.pop();
+    }
+    res.status(204).end();
+  } catch {
+    res.status(500).json({ error: 'Failed to record audit log' });
+  }
+});
+
+// View recent audit logs (Admin/Diagnostic)
+app.get('/api/logs', (req, res) => {
+  res.json({
+    total: serverAuditLogs.length,
+    logs: serverAuditLogs.slice(0, 100)
+  });
+});
+
+// Root ping endpoint for cron/uptime monitors (UptimeRobot / Better Stack)
 app.get('/', (req, res) => {
   res.json({
     status: 'online',
     service: 'GARVI API Backend',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+    monitor: 'ready'
   });
 });
 
-// Health check endpoint
+// Head request support for lightweight uptime pingers
+app.head('/', (req, res) => {
+  res.status(200).end();
+});
+
+// Health check endpoint with deep DB inspection
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     service: 'GARVI PostgreSQL Supabase Backend',
     dbConnected: Boolean(supabase || pgPool),
     institutionsLoaded: inMemoryInstitutions.length,
+    memoryUsageMB: Math.round(process.memoryUsage().rss / (1024 * 1024)),
+    uptimeSeconds: Math.floor(process.uptime()),
     timestamp: new Date().toISOString()
   });
 });
