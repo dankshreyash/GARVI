@@ -1,0 +1,15 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/home", "destination": "/", "permanent": true },
+    { "source": "/powerbi", "destination": "/analytics", "permanent": true },
+    { "source": "/compare", "destination": "/benchmarking", "permanent": true },
+    { "source": "/simulation", "destination": "/simulator", "permanent": true },
+    { "source": "/signin", "destination": "/login", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/GARVI REACT/dist/index.html" }
+  ]
+}

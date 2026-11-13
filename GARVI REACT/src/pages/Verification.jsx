@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -16,6 +16,7 @@ import {
   Check
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import Seo from '../components/Seo';
 
 const VERIFIED_DIRECTORY = {
   'GUJ-UNI-104': {
@@ -123,8 +124,31 @@ export default function Verification() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const certSchemas = useMemo(() => [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'EducationalOccupationalCredential',
+      name: `${record.name} GSIRF Rating Certificate`,
+      credentialCategory: record.grade,
+      recognizedBy: {
+        '@type': 'GovernmentOrganization',
+        name: 'Knowledge Consortium of Gujarat (KCG)'
+      },
+      validIn: {
+        '@type': 'AdministrativeArea',
+        name: 'Gujarat, India'
+      }
+    }
+  ], [record]);
+
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 pb-20">
+      <Seo
+        title={`GSIRF Verification — ${record.name}`}
+        description={`Cryptographically verified institutional rating badge & certificate for ${record.name} under GSIRF rating framework.`}
+        keywords="GSIRF certificate verification, Gujarat college rating badge, KCG rating verification"
+        schemas={certSchemas}
+      />
       {/* Top Bar */}
       <header className="glass sticky top-0 z-40 border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">

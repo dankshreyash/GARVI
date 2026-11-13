@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -11,10 +11,26 @@ import {
   BarChart3
 } from 'lucide-react';
 import AnalyticsToolPdfRecreation from '../components/AnalyticsToolPdfRecreation';
+import Seo from '../components/Seo';
 
 export default function Analytics() {
   const [navOpen, setNavOpen] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  const analyticsSchemas = useMemo(() => [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Dataset',
+      name: 'GSIRF 2024 Gujarat Higher Education Analytics Dataset',
+      description: 'Comprehensive institutional ratings and micro-indicator scores for 469 colleges across Gujarat across TLR, RP, GO, and OI pillars.',
+      url: 'https://garvi-inky.vercel.app/analytics',
+      keywords: ['GSIRF', 'College Ranking Gujarat', 'TLR', 'Research & IPR', 'Graduation Outcomes'],
+      creator: {
+        '@type': 'GovernmentOrganization',
+        name: 'Knowledge Consortium of Gujarat (KCG)'
+      }
+    }
+  ], []);
 
   const handleExport = () => {
     setNotification({
@@ -43,6 +59,13 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+      <Seo
+        title="Statewide Institutional Analytics & Rating Scorecards"
+        description="Explore GSIRF 2024 institutional scorecards, 4 core pillars (TLR, RP, GO, OI), and 16 micro-indicators for 469 colleges across Gujarat."
+        keywords="GSIRF analytics, Gujarat college scorecards, TLR score, Research & IPR, Gujarat Higher Education ratings"
+        schemas={analyticsSchemas}
+      />
+
       {/* Top Navigation */}
       <nav className="glass fixed w-full top-0 z-50 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,9 +137,9 @@ export default function Analytics() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-garvi-orange" />
-            <span className="text-xs font-bold text-slate-800">
-              Interactive Analytics Engine:
-            </span>
+            <h1 className="text-xs font-bold text-slate-800 tracking-wide uppercase">
+              GSIRF Institutional Analytics Engine
+            </h1>
           </div>
 
           <div className="flex items-center gap-2">

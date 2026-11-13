@@ -22,6 +22,7 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import { INSTITUTIONS_REGISTRY } from '../data/institutionsRegistry';
 import InstitutionalRechartsSuite from '../components/InstitutionalRechartsSuite';
+import Seo from '../components/Seo';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -82,6 +83,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-16" onClick={() => profileOpen && setProfileOpen(false)}>
+      <Seo
+        title={`${activeInst.name} — Institutional Analytics Dashboard`}
+        description={`Internal GSIRF performance dashboard, scorecard pillars, and digital accreditation badge for ${activeInst.name}.`}
+        noindex={true}
+      />
       {/* Top Navbar */}
       <nav className="glass sticky top-0 z-40 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,9 +107,9 @@ export default function Dashboard() {
                 <span className="text-xl font-black text-gradient-garvi tracking-tight">GARVI</span>
               </Link>
               <span className="h-4 w-px bg-slate-300 hidden sm:block" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:block">
+              <h1 className="text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:block">
                 {lang === 'gu' ? 'સંસ્થાકીય ડેશબોર્ડ' : 'Institutional Analytics Dashboard'}
-              </span>
+              </h1>
             </div>
 
             <div className="flex items-center gap-2.5">

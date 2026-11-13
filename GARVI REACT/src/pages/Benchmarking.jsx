@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -11,10 +11,27 @@ import {
   BarChart3
 } from 'lucide-react';
 import MultiCollegeAnalyticsComparison from '../components/MultiCollegeAnalyticsComparison';
+import Seo from '../components/Seo';
 
 export default function Benchmarking() {
   const [navOpen, setNavOpen] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  const benchmarkingSchemas = useMemo(() => [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'GARVI Multi-Institution Benchmarking Tool',
+      applicationCategory: 'EducationalApplication',
+      operatingSystem: 'All',
+      url: 'https://garvi-inky.vercel.app/benchmarking',
+      description: 'Comparative analytical engine allowing higher education institutions across Gujarat to benchmark performance side-by-side.',
+      provider: {
+        '@type': 'GovernmentOrganization',
+        name: 'Knowledge Consortium of Gujarat (KCG)'
+      }
+    }
+  ], []);
 
   const handleExport = () => {
     setNotification({
@@ -43,6 +60,13 @@ export default function Benchmarking() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+      <Seo
+        title="Multi-Institution Peer Benchmarking & Gap Analysis"
+        description="Compare up to 3 Gujarat colleges and universities side-by-side on TLR, Research, Graduation Outcomes, and Outreach with radar charts."
+        keywords="GSIRF benchmarking, Gujarat college comparison, peer benchmarking, radar chart analytics, TLR gap analysis"
+        schemas={benchmarkingSchemas}
+      />
+
       {/* Top Navbar */}
       <nav className="glass fixed w-full top-0 z-50 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,9 +138,9 @@ export default function Benchmarking() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white rounded-2xl border border-slate-200 shadow-2xs">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-garvi-orange" />
-            <span className="text-xs font-bold text-slate-800">
-              Multi-College Analytical View Mode:
-            </span>
+            <h1 className="text-xs font-bold text-slate-800 tracking-wide uppercase">
+              Multi-College Institutional Benchmarking
+            </h1>
           </div>
 
           <div className="flex items-center gap-2">

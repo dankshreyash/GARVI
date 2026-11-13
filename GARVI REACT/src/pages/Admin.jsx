@@ -16,7 +16,6 @@ import {
   PlusCircle,
   Globe,
   FileSpreadsheet,
-  LogIn,
   ExternalLink,
   Shield,
   Lock,
@@ -30,6 +29,7 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import { INSTITUTIONS_FROM_EXCEL } from '../data/institutionsRegistry';
 import { loginInstitution } from '../api/garviApi';
+import Seo from '../components/Seo';
 
 export default function Admin() {
   const { lang, toggleLanguage, t } = useLanguage();
@@ -233,6 +233,11 @@ export default function Admin() {
   if (!isAdminAuthed) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-amber-950 text-white font-sans flex flex-col justify-between">
+        <Seo
+          title="State Administrator Portal — Access Verification"
+          description="Restricted evaluation and credential management portal for Education Department administrators."
+          noindex={true}
+        />
         {/* Gate Header */}
         <header className="border-b border-white/10 px-4 sm:px-8 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
@@ -281,9 +286,9 @@ export default function Admin() {
               <div className="inline-flex p-3.5 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 mb-4">
                 <Shield className="w-8 h-8" />
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white">
+              <h2 className="text-2xl font-black tracking-tight text-white">
                 Administrator Access
-              </h1>
+              </h2>
               <p className="text-xs text-amber-200/80 font-medium mt-1">
                 Restricted State Evaluation & Scrutiny Portal
               </p>
@@ -399,6 +404,11 @@ export default function Admin() {
   // =========================================================================
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-16">
+      <Seo
+        title="State Oversight & Institutional Registry Dashboard"
+        description="State Administrator Portal for GSIRF institutional registry, data verification, and statewide rankings."
+        noindex={true}
+      />
       {/* Top Header */}
       <header className="glass sticky top-0 z-40 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">

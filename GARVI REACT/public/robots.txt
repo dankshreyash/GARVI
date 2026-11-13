@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /analytics
+Allow: /benchmarking
+Allow: /simulator
+Allow: /verify/
+Allow: /login
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://garvi-inky.vercel.app/sitemap.xml

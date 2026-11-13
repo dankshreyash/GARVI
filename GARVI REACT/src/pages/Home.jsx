@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Seo from '../components/Seo';
 import { useLanguage } from '../context/LanguageContext';
 import {
   BarChart3,
@@ -21,8 +22,78 @@ export default function Home() {
   const [currentYear] = useState(() => new Date().getFullYear());
   const { t } = useLanguage();
 
+  const homeSchemas = useMemo(() => [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'GovernmentOrganization',
+      name: 'GARVI — Gujarat Academic Ratings Visualization for Improvement',
+      alternateName: 'GSIRF Portal',
+      url: 'https://garvi-inky.vercel.app/',
+      logo: 'https://garvi-inky.vercel.app/kcg_gujarat_transparent.png',
+      description: 'Official higher education rating, institutional benchmarking and analytics platform under Education Department, Government of Gujarat.',
+      parentOrganization: {
+        '@type': 'GovernmentOrganization',
+        name: 'Knowledge Consortium of Gujarat (KCG)',
+        url: 'https://kcg.gujarat.gov.in/'
+      },
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Ahmedabad',
+        addressRegion: 'Gujarat',
+        addressCountry: 'IN'
+      }
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'GARVI Gujarat Academic Ratings',
+      url: 'https://garvi-inky.vercel.app/',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://garvi-inky.vercel.app/analytics?q={search_term_string}',
+        'query-input': 'required name=search_term_string'
+      }
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'What is GARVI?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'GARVI (Gujarat Academic Ratings Visualization for Improvement) is the official analytics and institutional benchmarking platform powering the Gujarat State Institutional Rating Framework (GSIRF) for over 470 universities and colleges.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'How does the GSIRF 2026 Simulator work?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'The GSIRF Simulator enables colleges to perform what-if scenario planning by adjusting faculty ratio, research papers, PhD faculty, and student strength to project anticipated star rating and rank changes.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Can institutions compare their metrics against other colleges?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes, the Peer Benchmarking tool lets institutions compare up to 3 colleges side-by-side across TLR, Research & IPR, Graduation Outcomes, and Outreach & Inclusivity.'
+          }
+        }
+      ]
+    }
+  ], []);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans relative overflow-x-hidden">
+      <Seo
+        title="Gujarat Academic Ratings Visualization for Improvement | GSIRF 2026"
+        description="Official GSIRF analytics, institutional benchmarking, and predictive simulator for 470+ universities and colleges across Gujarat."
+        keywords="GARVI, GSIRF, Gujarat Higher Education, NIRF Gujarat, Gujarat College Ratings, Gujarat University Rankings, KCG, Academic Benchmarking"
+        schemas={homeSchemas}
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -60,16 +131,15 @@ export default function Home() {
             </div>
           </div>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight mb-4 fade-in stagger-2">
-            <span className="text-gradient-garvi">GARVI</span>
-          </h1>
-
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 max-w-3xl mx-auto mb-6 leading-snug fade-in stagger-3">
-            {t('home.heroTitlePrefix', 'Empowering Gujarat Higher Education with')}{' '}
-            <span className="text-garvi-orange underline decoration-amber-300 decoration-wavy decoration-2">
-              {t('home.heroTitleHighlight', 'Data-Driven Excellence')}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 fade-in stagger-2">
+            <span className="text-gradient-garvi block text-5xl sm:text-6xl md:text-7xl mb-1">GARVI</span>
+            <span className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 max-w-3xl mx-auto block leading-snug">
+              {t('home.heroTitlePrefix', 'Empowering Gujarat Higher Education with')}{' '}
+              <span className="text-garvi-orange underline decoration-amber-300 decoration-wavy decoration-2">
+                {t('home.heroTitleHighlight', 'Data-Driven Excellence')}
+              </span>
             </span>
-          </h2>
+          </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed fade-in stagger-4">
             {t('home.heroSubtitle', 'GARVI (Gujarat Academic Ratings Visualization for Improvement) is the official state analytics & institutional benchmarking engine powering GSIRF 2026 for 470+ universities and colleges.')}

@@ -1,11 +1,29 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Share2, RotateCcw, Menu, X } from 'lucide-react';
 import GsirfInteractiveSimulator from '../components/GsirfInteractiveSimulator';
+import Seo from '../components/Seo';
 
 export default function Simulator() {
   const [navOpen, setNavOpen] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  const simulatorSchemas = useMemo(() => [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'GSIRF 2026 Interactive Rating Simulator',
+      applicationCategory: 'EducationalApplication',
+      operatingSystem: 'Web Browser',
+      url: 'https://garvi-inky.vercel.app/simulator',
+      description: 'Predictive rating and rank projection engine for Gujarat colleges to model improvements across 16 GSIRF micro-indicators.',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'INR'
+      }
+    }
+  ], []);
 
   const handleExport = () => {
     setNotification({
@@ -34,6 +52,12 @@ export default function Simulator() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
+      <Seo
+        title="GSIRF 2026 Interactive Rating Simulator & Rank Projector"
+        description="Model what-if scenarios across 16 GSIRF micro-indicators to project star ratings, CGPA, and rank improvements for Gujarat institutions."
+        keywords="GSIRF simulator, college ranking simulator, rating improvement tool, Gujarat academic simulation, what-if academic analysis"
+        schemas={simulatorSchemas}
+      />
       <nav className="glass fixed w-full top-0 z-50 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
