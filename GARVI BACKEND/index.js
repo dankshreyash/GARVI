@@ -60,8 +60,15 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const cleanUsername = username.trim().toLowerCase();
-    const cleanPassword = password.trim();
+    const cleanUsername = String(username).trim().toLowerCase();
+    const cleanPassword = String(password).trim();
+
+    if (cleanUsername.length < 2 || cleanUsername.length > 100) {
+      return res.status(400).json({ error: 'Username must be between 2 and 100 characters' });
+    }
+    if (cleanPassword.length < 3 || cleanPassword.length > 100) {
+      return res.status(400).json({ error: 'Password must be between 3 and 100 characters' });
+    }
 
     // 1. Try Supabase JS client if configured
     if (supabase) {
