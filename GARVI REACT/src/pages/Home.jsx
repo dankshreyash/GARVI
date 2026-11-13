@@ -466,10 +466,14 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
             <p>© {currentYear} GARVI. {t('common.allRightsReserved', 'All rights reserved.')}</p>
-            <div className="flex items-center gap-4 text-slate-400">
-              <span>Developed by <strong className="text-slate-200">ICARE</strong></span>
+            <div className="flex flex-wrap items-center gap-4 text-slate-400">
+              <Link to="/privacy" className="hover:text-garvi-orange transition">Privacy Policy (DPDP Act)</Link>
+              <span>•</span>
+              <Link to="/terms" className="hover:text-garvi-orange transition">Terms</Link>
+              <span>•</span>
+              <Link to="/cookies" className="hover:text-garvi-orange transition">Cookies</Link>
               <span>•</span>
               <span><strong className="text-slate-200">{t('common.govGujarat', 'Government of Gujarat')}</strong></span>
             </div>

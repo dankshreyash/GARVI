@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
+import CookieConsent from './components/CookieConsent';
 
 // Eager load Home & Login for instant initial paint & Lighthouse speed
 import Home from './pages/Home';
@@ -15,6 +16,9 @@ const Benchmarking = lazy(() => import('./pages/Benchmarking'));
 const Simulator = lazy(() => import('./pages/Simulator'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Verification = lazy(() => import('./pages/Verification'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function PageLoader() {
@@ -46,6 +50,11 @@ function App() {
                 <Route path="/verify/:id" element={<Verification />} />
                 <Route path="/verify" element={<Verification />} />
 
+                {/* Legal & Compliance Routes (DPDP Act, GDPR) */}
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/cookies" element={<CookiePolicy />} />
+
                 {/* In-app route redirects for legacy URLs */}
                 <Route path="/home" element={<Navigate to="/" replace />} />
                 <Route path="/powerbi" element={<Navigate to="/analytics" replace />} />
@@ -57,6 +66,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            <CookieConsent />
           </Layout>
         </BrowserRouter>
       </LanguageProvider>
