@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import { Home, BarChart3 } from 'lucide-react';
 import Seo from '../components/Seo';
 
-export default function NotFound() {
-  const currentYear = new Date().getFullYear();
+const CURRENT_YEAR = new Date().getFullYear();
 
+export default function NotFound() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between font-sans">
       <Seo
@@ -72,7 +72,7 @@ export default function NotFound() {
       </main>
 
       <footer className="py-6 text-center text-xs text-slate-500 border-t border-slate-200">
-        &copy; {currentYear} GARVI — Gujarat Academic Ratings Visualization for Improvement. Knowledge Consortium of Gujarat (KCG).
+        &copy; {CURRENT_YEAR} GARVI — Gujarat Academic Ratings Visualization for Improvement. Knowledge Consortium of Gujarat (KCG).
       </footer>
     </div>
   );

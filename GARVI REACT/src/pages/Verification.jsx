@@ -154,14 +154,21 @@ export default function Verification() {
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="h-9 w-9 rounded-xl bg-orange-50 border border-amber-200/60 flex items-center justify-center p-0.5 overflow-hidden">
-              <img
-                src="/kcg_gujarat_transparent.png"
-                alt="GARVI"
-                className="h-full w-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/kcg_gujarat_transparent.webp" type="image/webp" />
+                <img
+                  src="/kcg_gujarat_transparent.png"
+                  alt="GARVI"
+                  width="36"
+                  height="36"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                  }}
+                />
+              </picture>
             </div>
             <div>
               <span className="text-lg font-black text-gradient-garvi tracking-tight">GARVI</span>

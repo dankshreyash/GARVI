@@ -95,14 +95,21 @@ export default function Dashboard() {
             <div className="flex items-center gap-3">
               <Link to="/" className="flex items-center gap-2.5">
                 <div className="h-9 w-9 rounded-xl bg-orange-50 border border-amber-200/60 flex items-center justify-center p-0.5 overflow-hidden">
-                  <img
-                    src="/kcg_gujarat_transparent.png"
-                    alt="GARVI"
-                    className="h-full w-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
-                    }}
-                  />
+                  <picture>
+                    <source srcSet="/kcg_gujarat_transparent.webp" type="image/webp" />
+                    <img
+                      src="/kcg_gujarat_transparent.png"
+                      alt="GARVI"
+                      width="36"
+                      height="36"
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                      }}
+                    />
+                  </picture>
                 </div>
                 <span className="text-xl font-black text-gradient-garvi tracking-tight">GARVI</span>
               </Link>
@@ -371,6 +378,10 @@ export default function Dashboard() {
                   <img
                     src={`/badges/${badgeSlug}`}
                     alt="GSIRF Verified Institution"
+                    width="360"
+                    height="84"
+                    loading="lazy"
+                    decoding="async"
                     className="max-w-full h-auto drop-shadow-sm cursor-pointer"
                   />
                 </Link>

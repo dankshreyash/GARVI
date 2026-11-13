@@ -86,14 +86,21 @@ export default function Login() {
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 flex items-center justify-center p-0.5 shadow-2xs">
-              <img
-                src="/kcg_gujarat_transparent.png"
-                alt="GARVI Gujarat Logo"
-                className="h-full w-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/kcg_gujarat_transparent.webp" type="image/webp" />
+                <img
+                  src="/kcg_gujarat_transparent.png"
+                  alt="GARVI Gujarat Logo"
+                  width="36"
+                  height="36"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                  }}
+                />
+              </picture>
             </div>
             <div>
               <span className="text-xl font-black text-gradient-garvi tracking-tight">GARVI</span>
@@ -129,14 +136,21 @@ export default function Login() {
         <div className="w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-xl p-8 fade-in">
           <div className="text-center mb-6">
             <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center p-1 overflow-hidden">
-              <img
-                src="/kcg_gujarat_transparent.png"
-                alt="GARVI Symbol"
-                className="h-full w-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/kcg_gujarat_transparent.webp" type="image/webp" />
+                <img
+                  src="/kcg_gujarat_transparent.png"
+                  alt="GARVI Symbol"
+                  width="64"
+                  height="64"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                  }}
+                />
+              </picture>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               {t('login.title', 'Institutional Login')}

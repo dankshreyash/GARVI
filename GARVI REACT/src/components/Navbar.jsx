@@ -14,15 +14,20 @@ export default function Navbar() {
           {/* Brand Logo & Emblem with transparent Gujarat map */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200/60 flex items-center justify-center p-0.5 shadow-xs group-hover:scale-105 transition-transform overflow-hidden">
-              <img
-                src="/kcg_gujarat_transparent.png"
-                alt="KCG Gujarat Emblem"
-                className="h-full w-full object-contain"
-                onError={(e) => {
-                  // Fallback to original symbol if file path has issue
-                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/kcg_gujarat_transparent.webp" type="image/webp" />
+                <img
+                  src="/kcg_gujarat_transparent.png"
+                  alt="KCG Gujarat Emblem"
+                  width="40"
+                  height="40"
+                  fetchPriority="high"
+                  className="h-full w-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                  }}
+                />
+              </picture>
             </div>
             <div>
               <div className="flex items-center gap-1.5">

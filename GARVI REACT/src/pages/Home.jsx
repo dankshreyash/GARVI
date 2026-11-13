@@ -118,16 +118,21 @@ export default function Home() {
           {/* Transparent Gujarat Map & KCG Emblem */}
           <div className="mb-6 fade-in stagger-1">
             <div className="inline-block relative">
-              <img
-                src="/kcg_gujarat_transparent.png"
-                alt="GARVI Gujarat Emblem"
-                className="mx-auto h-24 md:h-32 object-contain drop-shadow-md hover:scale-105 transition-transform duration-300"
-                width={480}
-                height={273}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
-                }}
-              />
+              <picture>
+                <source srcSet="/kcg_gujarat_transparent.webp" type="image/webp" />
+                <img
+                  src="/kcg_gujarat_transparent.png"
+                  alt="GARVI Gujarat Emblem"
+                  className="mx-auto h-24 md:h-32 object-contain drop-shadow-md hover:scale-105 transition-transform duration-300"
+                  width={480}
+                  height={273}
+                  fetchPriority="high"
+                  decoding="async"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://i.im.ge/2025/10/14/ngltcP.GARVI-symbol.png';
+                  }}
+                />
+              </picture>
             </div>
           </div>
 

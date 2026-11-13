@@ -13,3 +13,4 @@
     { "source": "/(.*)", "destination": "/GARVI REACT/dist/index.html" }
   ]
 }
+
